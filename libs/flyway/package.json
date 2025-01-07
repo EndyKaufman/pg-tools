@@ -1,0 +1,50 @@
+{
+  "name": "flyway",
+  "description": "Database migration tool, NodeJS version of Java migration tool - flyway, supported databases: PostrgeSQL",
+  "version": "0.0.1",
+  "bin": {
+    "flyway": "./index.js"
+  },
+  "keywords": [
+    "flyway",
+    "flywaydb",
+    "postgres",
+    "postgresql",
+    "pg",
+    "cli",
+    "migration",
+    "migrations",
+    "sql",
+    "psql"
+  ],
+  "license": "MIT",
+  "author": "EndyKaufman <admin@site15.ru>",
+  "engines": {
+    "node": ">=14",
+    "npm": ">=6"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "bugs": {
+    "url": "https://github.com/EndyKaufman/node-flywaydb-pg/issues"
+  },
+  "homepage": "https://github.com/EndyKaufman/node-flywaydb-pg",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EndyKaufman/node-flywaydb-pg.git"
+  },
+  "maintainers": [
+    {
+      "name": "EndyKaufman",
+      "email": "admin@site15.ru"
+    }
+  ],
+  "dependencies": {
+    "tslib": "^2.3.0",
+    "commander": "^13.0.0"
+  },
+  "type": "commonjs",
+  "main": "./src/index.js",
+  "typings": "./src/index.d.ts"
+}
