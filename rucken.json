@@ -2,6 +2,7 @@
   "makeTsList": {
     "indexFileName": "index",
     "excludes": [
+      "*/libs/pg-flyway/src/main.ts",
       "*node_modules*",
       "*public_api.ts*",
       "*.spec*",

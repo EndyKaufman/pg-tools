@@ -29,8 +29,8 @@
     "noImplicitReturns": true,
     "esModuleInterop": true,
     "paths": {
-      "@node-flywaydb-pg/flyway": [
-        "libs/flyway/src/index.ts"
+      "@pg-tools/pg-flyway": [
+        "libs/pg-flyway/src/index.ts"
       ],
     }
   },

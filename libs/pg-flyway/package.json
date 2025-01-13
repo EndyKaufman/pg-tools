@@ -1,9 +1,9 @@
 {
-  "name": "flyway",
+  "name": "pg-flyway",
   "description": "Database migration tool, NodeJS version of Java migration tool - flyway, supported databases: PostrgeSQL",
   "version": "0.0.1",
   "bin": {
-    "flyway": "./index.js"
+    "pg-flyway": "./index.js"
   },
   "keywords": [
     "flyway",
@@ -14,6 +14,8 @@
     "cli",
     "migration",
     "migrations",
+    "pg-tools",
+    "pg-flyway",
     "sql",
     "psql"
   ],
@@ -27,12 +29,12 @@
     "access": "public"
   },
   "bugs": {
-    "url": "https://github.com/EndyKaufman/node-flywaydb-pg/issues"
+    "url": "https://github.com/EndyKaufman/pg-tools/issues"
   },
-  "homepage": "https://github.com/EndyKaufman/node-flywaydb-pg",
+  "homepage": "https://github.com/EndyKaufman/pg-tools",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/EndyKaufman/node-flywaydb-pg.git"
+    "url": "git+https://github.com/EndyKaufman/pg-tools.git"
   },
   "maintainers": [
     {

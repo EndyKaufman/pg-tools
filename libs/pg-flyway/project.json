@@ -1,7 +1,7 @@
 {
-  "name": "flyway",
+  "name": "pg-flyway",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "libs/flyway/src",
+  "sourceRoot": "libs/pg-flyway/src",
   "projectType": "library",
   "tags": [],
   "targets": {
@@ -11,18 +11,18 @@
         "{options.outputPath}"
       ],
       "options": {
-        "outputPath": "dist/libs/flyway",
-        "tsConfig": "libs/flyway/tsconfig.lib.json",
-        "packageJson": "libs/flyway/package.json",
-        "main": "libs/flyway/src/index.ts",
+        "outputPath": "dist/libs/pg-flyway",
+        "tsConfig": "libs/pg-flyway/tsconfig.lib.json",
+        "packageJson": "libs/pg-flyway/package.json",
+        "main": "libs/pg-flyway/src/index.ts",
         "assets": [
-          "libs/flyway/*.md",
-          "libs/flyway/*.js"
+          "libs/pg-flyway/*.md",
+          "libs/pg-flyway/*.js"
         ]
       }
     },
     "publish": {
-      "command": "node tools/scripts/publish.mjs flyway {args.ver} {args.tag}",
+      "command": "node tools/scripts/publish.mjs pg-flyway {args.ver} {args.tag}",
       "dependsOn": [
         "build"
       ]
@@ -36,7 +36,7 @@
         "{workspaceRoot}/coverage/{projectRoot}"
       ],
       "options": {
-        "jestConfig": "libs/flyway/jest.config.ts"
+        "jestConfig": "libs/pg-flyway/jest.config.ts"
       }
     },
     "semantic-release": {

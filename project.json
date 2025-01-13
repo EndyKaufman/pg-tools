@@ -1,5 +1,5 @@
 {
-  "name": "@node-flywaydb-pg/source",
+  "name": "@pg-tools/source",
   "$schema": "node_modules/nx/schemas/project-schema.json",
   "targets": {
     "local-registry": {
