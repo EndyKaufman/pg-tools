@@ -10,7 +10,7 @@ export interface MigrateConfig {
   sqlMigrationStatementSeparator?: string;
 }
 
-export const DEFAULT_MIGRATE_CONFIG: MigrateConfig = {
+export const DEFAULT_MIGRATE_CONFIG: Required<MigrateConfig> = {
   locations: ['migrations'],
   historyTable: FLYWAY_HISTORY_TABLE,
   historySchema: FLYWAY_HISTORY_SCHEMA,

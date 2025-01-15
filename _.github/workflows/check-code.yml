@@ -21,7 +21,13 @@ jobs:
         with:
           cache: npm
           node-version: 20
-      - run: npm ci
+      - run: yarn install
       - run: npm run generate
       - run: npm run build
       - run: npm run test
+
+      - uses: tanmen/jest-reporter@v1
+        if: always()
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          result-file: jest.result.json

@@ -10,10 +10,7 @@
     "importHelpers": true,
     "target": "es2015",
     "module": "esnext",
-    "lib": [
-      "es2020",
-      "dom"
-    ],
+    "lib": ["es2020", "dom"],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "allowJs": true,
@@ -29,13 +26,8 @@
     "noImplicitReturns": true,
     "esModuleInterop": true,
     "paths": {
-      "@pg-tools/pg-flyway": [
-        "libs/pg-flyway/src/index.ts"
-      ]
+      "pg-flyway": ["libs/pg-flyway/src/index.ts"]
     }
   },
-  "exclude": [
-    "node_modules",
-    "tmp"
-  ]
+  "exclude": ["node_modules", "tmp"]
 }

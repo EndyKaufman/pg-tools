@@ -562,8 +562,6 @@ export class MigrateService {
     client,
     query,
     dryRun,
-    migration,
-    databaseUrl,
     placeholders,
   }: {
     client?: PoolClient;
@@ -759,7 +757,6 @@ export class MigrateService {
   }
 
   async getFiles({
-    dryRun,
     locations,
     sqlMigrationSuffixes,
   }: {

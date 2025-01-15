@@ -43,3 +43,4 @@ Thumbs.db
 .clinic
 
 .env
+jest.result.json

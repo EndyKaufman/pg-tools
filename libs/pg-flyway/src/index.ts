@@ -1,4 +1,3 @@
-export * from './main';
 export * from './commands/migrate';
 export * from './commands/version';
 export * from './constants/default';
