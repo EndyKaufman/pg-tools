@@ -1,12 +1,12 @@
 import { Command } from 'commander';
-import { migrator } from './commands/migrator';
+import { migrate } from './commands/migrate';
 import { version } from './commands/version';
 import { getPackageJson } from './utils/get-package-json';
 
 const program = new Command();
 const packageJson = getPackageJson();
 
-migrator(program);
+migrate(program);
 version(program, packageJson);
 
 program.parse(process.argv);

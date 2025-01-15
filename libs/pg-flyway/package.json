@@ -1,6 +1,6 @@
 {
   "name": "pg-flyway",
-  "description": "Database migration tool, NodeJS version of Java migration tool - flyway, supported databases: PostrgeSQL",
+  "description": "Migration tool for PostgreSQL database, NodeJS version of Java migration tool - flyway",
   "version": "0.0.1",
   "bin": {
     "pg-flyway": "./index.js"

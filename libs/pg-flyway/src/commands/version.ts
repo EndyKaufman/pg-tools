@@ -3,7 +3,7 @@ import { PackageJson } from '../types/package-json';
 
 export function version(program: Command, packageJson: PackageJson) {
   program
-    .name('pg-flyway')
-    .description('Database migration tool, NodeJS version of Java migration tool - flyway, supported databases: PostrgeSQL')
+    .name(packageJson['name'])
+    .description(packageJson['description'])
     .version(packageJson['version'], '-v, --version');
 }

@@ -31,7 +31,7 @@
     "paths": {
       "@pg-tools/pg-flyway": [
         "libs/pg-flyway/src/index.ts"
-      ],
+      ]
     }
   },
   "exclude": [
