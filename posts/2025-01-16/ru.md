@@ -1,13 +1,15 @@
+## [2025-01-16] Lite-версия мигратора Flyway для PostgreSQL на TypeScript.
+
 ## Описание
 
-В своих проектах для управления миграциями баз данных я всегда использую `flyway`, включая некоторые важные компоненты его экосистемы:
+В своих проектах для управления миграциями баз данных я всегда использую [Flyway](https://documentation.red-gate.com/fd/installers-172490864.html), включая некоторые важные компоненты его экосистемы:
 
 1. [Versioned migrations](https://documentation.red-gate.com/fd/versioned-migrations-273973333.html) — это стандартные миграции, которые применяются последовательно друг за другом.
 2. [Repeatable migrations](https://documentation.red-gate.com/fd/repeatable-migrations-273973335.html) — это повторяемые миграции, например, скрипты для создания процедур. Они позволяют отслеживать историю изменений с помощью Git.
 
 3. [Callbacks](https://documentation.red-gate.com/fd/callbacks-275218509.html) — это различные хуки, которые срабатывают в определённое время. Например, можно создать скрипт `beforeMigrate__init_types.sql`, в котором описаны все кастомные типы, используемые в базе данных. Мигратор сначала выполняет этот скрипт, а затем остальные операции.
 
-Так как мои проекты преимущественно основаны на `Node.js`, я использую `Node.js`-обёртку для `flyway` — [node-flywaydb](https://www.npmjs.com/package/node-flywaydb). Этот инструмент очень прост в использовании: при запуске он скачивает оригинальную `Java`-утилиту и запускает её, поэтому для работы требуется наличие `JVM` на машине.
+Так как мои проекты преимущественно основаны на `Node.js`, я использую `Node.js`-обёртку для `Flyway` — [node-flywaydb](https://www.npmjs.com/package/node-flywaydb). Этот инструмент очень прост в использовании: при запуске он скачивает оригинальную `Java`-утилиту и запускает её, поэтому для работы требуется наличие `JVM` на машине.
 
 ## Проблема
 
@@ -17,11 +19,11 @@
 
 1. Использовать `Node.js`-миграторы (например: `db-migrate`, `umzug`, `pg-migrate`).
 2. Использовать миграторы, встроенные в `ORM`, применяемую в проекте (например: `prisma`, `typeorm`).
-3. Написать лёгкий клон `flyway` на `Node.js`.
+3. Написать лёгкий клон `Flyway` на `Node.js` для одного типа базы данных (`PostgreSQL`).
 
 ## Принятое решение
 
-Так как я активно использую возможности `flyway`, такие как `repeatable migrations` и `callbacks`, и не хочу от них отказываться, а аналогов этих функций в других системах миграции нет, я решил написать собственный лёгкий клон `flyway` на `Node.js`, что и было сделано.
+Так как я активно использую возможности `Flyway`, такие как `repeatable migrations` и `callbacks`, и не хочу от них отказываться, а аналогов этих функций в других системах миграции нет, я решил написать собственный лёгкий клон `Flyway` на `Node.js` для `PostgreSQL`, что и было сделано.
 
 ## Этапы разработки
 
@@ -29,7 +31,7 @@
 2. [Repeatable migrations](https://documentation.red-gate.com/fd/repeatable-migrations-273973335.html) — **выполнено**.
 3. [Callbacks](https://documentation.red-gate.com/fd/callbacks-275218509.html) — **частично выполнено**, только для `versioned`.
 4. [Flyway schema history table](https://documentation.red-gate.com/fd/flyway-schema-history-table-273973417.html) — **частично выполнена**, только для `versioned` и `repeatable`.
-5. [Migration Command Dry Runs](https://documentation.red-gate.com/fd/migration-command-dry-runs-275218517.html) — _выполнено_.
+5. [Migration Command Dry Runs](https://documentation.red-gate.com/fd/migration-command-dry-runs-275218517.html) — **выполнено**.
 6. [Baseline migrations](https://documentation.red-gate.com/fd/baseline-migrations-273973336.html) — не выполнено.
 7. [Undo migrations](https://documentation.red-gate.com/fd/baseline-migrations-273973336.html) — не выполнено.
 8. [Script migrations](https://documentation.red-gate.com/fd/script-migrations-273973390.html) — не выполнено.
@@ -122,18 +124,18 @@ docker compose down
 
 ## Планы
 
-Основные функций flyway успешно портированы в JS-код, это уже покрывает типовой функционал любого из миграторов.
+Основные функции `Flyway` уже перенесены в `Typescript`-код, что обеспечивает необходимый функционал для большинства сценариев при работе с миграциями.
 
-Оставшийся не портированный функционал я постараюсь добавлять по мере появления свободного времени.
+Остальные не портированные функции я планирую переносить по мере наличия свободного времени.
 
-Если у кого появится время и желание, то я всегда буду рад пул реквестам с фичами и исправлениями по коду.
+Буду рад `pull`-реквестам с новыми функциями и исправлением багов.
 
 ## Ссылки
 
-https://github.com/EndyKaufman/pg-tools - репозиторий с проектом
+- https://github.com/EndyKaufman/pg-tools - Репозиторий проекта
 
-https://www.npmjs.com/package/pg-flyway - утилита на npm
+- https://www.npmjs.com/package/pg-flyway - Утилита на NPM
 
-https://documentation.red-gate.com/fd/flyway-concepts-271583830.html - документация Flyway
+- https://www.npmjs.com/package/node-flywaydb - Враппер для `Flyway` (`Java`) на `NodeJS`
 
-https://www.npmjs.com/package/node-flywaydb - враппер для Flyway (Java) на NodeJS
+- https://documentation.red-gate.com/flyway-concepts-271583830.html - Документация `Flyway`
