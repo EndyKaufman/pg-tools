@@ -21,7 +21,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          cache: npm
+          cache: yarn
           node-version: 22
       - run: yarn install
       - run: npm run generate
