@@ -139,3 +139,5 @@ docker compose down
 - https://www.npmjs.com/package/node-flywaydb - Враппер для `Flyway` (`Java`) на `NodeJS`
 
 - https://documentation.red-gate.com/flyway-concepts-271583830.html - Документация `Flyway`
+
+#typescript #postgres #database #nodejs
