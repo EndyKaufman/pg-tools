@@ -1,3 +1,11 @@
+## [1.0.1](https://github.com/EndyKaufman/pg-tools/compare/pg-flyway-v1.0.0...pg-flyway-v1.0.1) (2025-01-16)
+
+
+### Bug Fixes
+
+* update logic for resolve script value ([d2d1dea](https://github.com/EndyKaufman/pg-tools/commit/d2d1deabf31e5c3a5210f5a9106fd6553802b40a))
+* update logic for resolve script value [#2](https://github.com/EndyKaufman/pg-tools/issues/2) ([d8911fe](https://github.com/EndyKaufman/pg-tools/commit/d8911fec8ca8a07f488519af661a11257ac7e2a6))
+
 # 1.0.0 (2025-01-16)
 
 
