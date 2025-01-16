@@ -1,4 +1,5 @@
 import CRC32 from 'crc-32';
+import { existsSync } from 'node:fs';
 import { basename, dirname, resolve, sep } from 'node:path';
 
 export const CALLBACK_KEYS: (keyof Migration['callback'])[] = [
@@ -178,10 +179,14 @@ export class Migration {
       }
 
       this.version = this.versionedVersion || this.undoVersion;
-      if (this.location) {
-        this.script = resolve(this.filepath).replace(resolve(this.location) + sep, '');
+      const location = this.location?.startsWith('./') ? this.location.substring(2) : this.location;
+      if (location) {
+        this.script = resolve(this.filepath).replace(resolve(location) + sep, '');
+        if (!existsSync(this.script)) {
+          this.script = this.filepath.replace(location + sep, '');
+        }
       } else {
-        this.script = this.filepath.replace(this.location + sep, '');
+        this.script = this.filepath.replace(location + sep, '');
       }
     }
   }
