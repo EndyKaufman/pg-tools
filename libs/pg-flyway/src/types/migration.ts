@@ -1,5 +1,5 @@
 import CRC32 from 'crc-32';
-import { basename, dirname, sep } from 'node:path';
+import { basename, dirname, resolve, sep } from 'node:path';
 
 export const CALLBACK_KEYS: (keyof Migration['callback'])[] = [
   'beforeMigrate', //	Before Migrate runs
@@ -178,7 +178,11 @@ export class Migration {
       }
 
       this.version = this.versionedVersion || this.undoVersion;
-      this.script = this.filepath.replace(this.location + sep, '');
+      if (this.location) {
+        this.script = resolve(this.filepath).replace(resolve(this.location) + sep, '');
+      } else {
+        this.script = this.filepath.replace(this.location + sep, '');
+      }
     }
   }
 
