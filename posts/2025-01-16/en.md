@@ -88,10 +88,10 @@ npx pg-flyway migrate --database-url=postgres://pgtoolsusername:pgtoolspassword@
 The result will be a successful migration:
 
 ```sh
-[2025-01-16T00:08:39.052] [INFO] MigrateService - Locations: migrations
-[2025-01-16T00:08:39.053] [INFO] MigrateService - HistoryTable: __migrations
-[2025-01-16T00:08:39.053] [INFO] MigrateService - DatabaseUrl: postgres://pgtoolsusername:pgtoolspassword@localhost:5432/pgtoolsdatabase?schema=public
-[2025-01-16T00:08:39.074] [INFO] MigrateService - Migrations: 1
+[2025-01-16T00:08:39.052] [INFO] migrate - Locations: migrations
+[2025-01-16T00:08:39.053] [INFO] migrate - HistoryTable: __migrations
+[2025-01-16T00:08:39.053] [INFO] migrate - DatabaseUrl: postgres://pgtoolsusername:pgtoolspassword@localhost:5432/pgtoolsdatabase?schema=public
+[2025-01-16T00:08:39.074] [INFO] migrate - Migrations: 1
 ```
 
 ### Viewing a list of completed migrations

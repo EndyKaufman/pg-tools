@@ -9,7 +9,9 @@
 
 3. [Callbacks](https://documentation.red-gate.com/fd/callbacks-275218509.html) — это различные хуки, которые срабатывают в определённое время. Например, можно создать скрипт `beforeMigrate__init_types.sql`, в котором описаны все кастомные типы, используемые в базе данных. Мигратор сначала выполняет этот скрипт, а затем остальные операции.
 
-Так как мои проекты преимущественно основаны на `Node.js`, я использую `Node.js`-обёртку для `Flyway` — [node-flywaydb](https://www.npmjs.com/package/node-flywaydb). Этот инструмент очень прост в использовании: при запуске он скачивает оригинальную `Java`-утилиту и запускает её, поэтому для работы требуется наличие `JVM` на машине.
+Я бэкенд разработчик на `Node.js` и стараюсь использовать консольные утилиты написанные под `Node.js`, в случаи с `Flyway` использую `Node.js`-обёртку — [node-flywaydb](https://www.npmjs.com/package/node-flywaydb).
+
+Этот инструмент очень прост в использовании: при запуске он скачивает оригинальную `Java`-утилиту и запускает её, поэтому для работы требуется наличие `JVM` на машине.
 
 ## Проблема
 
@@ -23,7 +25,7 @@
 
 ## Принятое решение
 
-Так как я активно использую возможности `Flyway`, такие как `repeatable migrations` и `callbacks`, и не хочу от них отказываться, а аналогов этих функций в других системах миграции нет, я решил написать собственный лёгкий клон `Flyway` на `Node.js` для `PostgreSQL`, что и было сделано.
+Поскольку я активно использую возможности `Flyway`, такие как `repeatable migrations` и `callbacks`, и не хочу отказываться от них, так как аналоги этих функций отсутствуют в других системах миграции, оптимальным решением стало создание собственного легкого клона `Flyway` на `Node.js` для работы с `PostgreSQL`.
 
 ## Этапы разработки
 
@@ -68,12 +70,12 @@ npx pg-flyway create --name=Init --version=1
 echo "CREATE TABLE \"User\"(id uuid NOT NULL DEFAULT uuid_generate_v4() constraint PK_USER primary key,email varchar(20));" > migrations/V1__Init.sql
 ```
 
-Результатом будет успешное создание пустой миграции:
+Результатом будет успешное создание миграции:
 
 ```sh
-[2025-01-15T23:23:53.903] [INFO] CreateEmptyMigrationService - Name: Init
-[2025-01-15T23:23:53.904] [INFO] CreateEmptyMigrationService - Locations: migrations
-[2025-01-15T23:23:53.914] [INFO] CreateEmptyMigrationService - Migration "migrations/V1__Init.sql" was created successfully!
+[2025-01-15T23:23:53.903] [INFO] create - Name: Init
+[2025-01-15T23:23:53.904] [INFO] create - Locations: migrations
+[2025-01-15T23:23:53.914] [INFO] create - Migration "migrations/V1__Init.sql" was created successfully!
 ```
 
 ### Применение миграции
@@ -87,10 +89,10 @@ npx pg-flyway migrate --database-url=postgres://pgtoolsusername:pgtoolspassword@
 Результатом будет успешное выполнение миграции:
 
 ```sh
-[2025-01-16T00:08:39.052] [INFO] MigrateService - Locations: migrations
-[2025-01-16T00:08:39.053] [INFO] MigrateService - HistoryTable: __migrations
-[2025-01-16T00:08:39.053] [INFO] MigrateService - DatabaseUrl: postgres://pgtoolsusername:pgtoolspassword@localhost:5432/pgtoolsdatabase?schema=public
-[2025-01-16T00:08:39.074] [INFO] MigrateService - Migrations: 1
+[2025-01-16T00:08:39.052] [INFO] migrate - Locations: migrations
+[2025-01-16T00:08:39.053] [INFO] migrate - HistoryTable: __migrations
+[2025-01-16T00:08:39.053] [INFO] migrate - DatabaseUrl: postgres://pgtoolsusername:pgtoolspassword@localhost:5432/pgtoolsdatabase?schema=public
+[2025-01-16T00:08:39.074] [INFO] migrate - Migrations: 1
 ```
 
 ### Просмотр списка выполненных миграций
