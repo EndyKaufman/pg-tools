@@ -23,7 +23,7 @@ export class MigrateService {
   protected historyTableService: HistoryTableService;
 
   constructor() {
-    this.logger = getLogger(MigrateService.name);
+    this.logger = getLogger('migrate');
     this.logger.level = getLogLevel();
 
     this.historyTableService = new HistoryTableService();
@@ -54,6 +54,7 @@ export class MigrateService {
     databaseUrl,
     locations,
     historyTable,
+    historySchema,
     sqlMigrationSuffixes,
     sqlMigrationSeparator,
     sqlMigrationStatementSeparator,
@@ -62,6 +63,7 @@ export class MigrateService {
     databaseUrl: string;
     locations: string[];
     historyTable: string;
+    historySchema?: string;
     sqlMigrationSuffixes: string[];
     sqlMigrationSeparator: string;
     sqlMigrationStatementSeparator: string;
@@ -89,12 +91,14 @@ export class MigrateService {
         statements: [
           this.historyTableService.getCreateHistoryTableSql({
             historyTable,
+            schema: historySchema,
           }),
         ],
       }),
       databaseUrl,
       dryRun,
       historyTable,
+      historySchema,
       placeholders: {},
     });
 
@@ -104,12 +108,14 @@ export class MigrateService {
           statements: [
             this.historyTableService.getMigrationsHistorySql({
               historyTable,
+              schema: historySchema,
             }),
           ],
         }),
         databaseUrl,
         dryRun,
         historyTable,
+        historySchema,
         placeholders: {},
       })
     ).flat();
@@ -126,6 +132,7 @@ export class MigrateService {
       databaseUrl,
       dryRun,
       historyTable,
+      historySchema,
     });
 
     await this.loopForRepeatableMigrations({
@@ -135,6 +142,7 @@ export class MigrateService {
       databaseUrl,
       dryRun,
       historyTable,
+      historySchema,
     });
   }
 
@@ -179,6 +187,7 @@ export class MigrateService {
     databaseUrl,
     dryRun,
     historyTable,
+    historySchema,
   }: {
     migrations: Migration[];
     histories: History[];
@@ -186,6 +195,7 @@ export class MigrateService {
     databaseUrl: string;
     dryRun?: boolean;
     historyTable: string;
+    historySchema?: string;
   }) {
     try {
       for (const migration of migrations.filter(
@@ -215,6 +225,7 @@ export class MigrateService {
               databaseUrl,
               dryRun,
               historyTable,
+              historySchema,
               placeholders: migration,
             });
           }
@@ -227,6 +238,7 @@ export class MigrateService {
               databaseUrl,
               dryRun,
               historyTable,
+              historySchema,
               placeholders: migration,
             });
           }
@@ -239,6 +251,7 @@ export class MigrateService {
             databaseUrl,
             dryRun,
             historyTable,
+            historySchema,
             beforeEachStatment: async (client) => {
               // beforeEachMigrateStatement
               for (const beforeEachMigrateStatement of collection.callback.beforeEachMigrateStatement || []) {
@@ -249,6 +262,7 @@ export class MigrateService {
                     client,
                     dryRun,
                     historyTable,
+                    historySchema,
                     placeholders: migration,
                   });
                 }
@@ -264,6 +278,7 @@ export class MigrateService {
                     client,
                     dryRun,
                     historyTable,
+                    historySchema,
                     placeholders: migration,
                   });
                 }
@@ -279,6 +294,7 @@ export class MigrateService {
                     client,
                     dryRun,
                     historyTable,
+                    historySchema,
                     placeholders: migration,
                   });
                 }
@@ -296,6 +312,7 @@ export class MigrateService {
                 databaseUrl,
                 dryRun,
                 historyTable,
+                historySchema,
                 placeholders: migration,
               });
             }
@@ -310,6 +327,7 @@ export class MigrateService {
                 databaseUrl,
                 dryRun,
                 historyTable,
+                historySchema,
                 placeholders: migration,
               });
             }
@@ -325,6 +343,7 @@ export class MigrateService {
           databaseUrl,
           dryRun,
           historyTable,
+          historySchema,
           placeholders: {},
         });
       }
@@ -337,6 +356,7 @@ export class MigrateService {
           databaseUrl,
           dryRun,
           historyTable,
+          historySchema,
           placeholders: {},
         });
       }
@@ -347,6 +367,7 @@ export class MigrateService {
           databaseUrl,
           dryRun,
           historyTable,
+          historySchema,
           placeholders: {},
         });
       }
@@ -361,6 +382,7 @@ export class MigrateService {
     databaseUrl,
     dryRun,
     historyTable,
+    historySchema,
   }: {
     migrations: Migration[];
     histories: History[];
@@ -368,6 +390,7 @@ export class MigrateService {
     databaseUrl: string;
     dryRun?: boolean;
     historyTable: string;
+    historySchema?: string;
   }) {
     try {
       for (const migration of migrations.filter(
@@ -405,6 +428,7 @@ export class MigrateService {
               databaseUrl,
               dryRun,
               historyTable,
+              historySchema,
               placeholders: migration,
             });
           }
@@ -417,6 +441,7 @@ export class MigrateService {
               databaseUrl,
               dryRun,
               historyTable,
+              historySchema,
               placeholders: migration,
             });
           }
@@ -429,6 +454,7 @@ export class MigrateService {
             databaseUrl,
             dryRun,
             historyTable,
+            historySchema,
             beforeEachStatment: async (client) => {
               // beforeEachMigrateStatement
               for (const beforeEachMigrateStatement of collection.callback.beforeEachMigrateStatement || []) {
@@ -439,6 +465,7 @@ export class MigrateService {
                     client,
                     dryRun,
                     historyTable,
+                    historySchema,
                     placeholders: migration,
                   });
                 }
@@ -454,6 +481,7 @@ export class MigrateService {
                     client,
                     dryRun,
                     historyTable,
+                    historySchema,
                     placeholders: migration,
                   });
                 }
@@ -469,6 +497,7 @@ export class MigrateService {
                     client,
                     dryRun,
                     historyTable,
+                    historySchema,
                     placeholders: migration,
                   });
                 }
@@ -486,6 +515,7 @@ export class MigrateService {
                 databaseUrl,
                 dryRun,
                 historyTable,
+                historySchema,
                 placeholders: migration,
               });
             }
@@ -500,6 +530,7 @@ export class MigrateService {
                 databaseUrl,
                 dryRun,
                 historyTable,
+                historySchema,
                 placeholders: migration,
               });
             }
@@ -513,6 +544,7 @@ export class MigrateService {
           databaseUrl,
           dryRun,
           historyTable,
+          historySchema,
           placeholders: {},
         });
       }
@@ -525,6 +557,7 @@ export class MigrateService {
           databaseUrl,
           dryRun,
           historyTable,
+          historySchema,
           placeholders: {},
         });
       }
@@ -537,6 +570,7 @@ export class MigrateService {
           databaseUrl,
           dryRun,
           historyTable,
+          historySchema,
           placeholders: {},
         });
       }
@@ -547,6 +581,7 @@ export class MigrateService {
           databaseUrl,
           dryRun,
           historyTable,
+          historySchema,
           placeholders: {},
         });
       }
@@ -594,6 +629,7 @@ export class MigrateService {
     client,
     dryRun,
     historyTable,
+    historySchema,
     placeholders,
   }: {
     migration: Migration;
@@ -604,6 +640,7 @@ export class MigrateService {
     client?: PoolClient;
     dryRun?: boolean;
     historyTable?: string;
+    historySchema?: string;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     placeholders: Record<string, any>;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -622,12 +659,14 @@ export class MigrateService {
               this.historyTableService.getNextInstalledRankSql({
                 migration,
                 historyTable,
+                schema: historySchema,
               }),
             ],
           }),
           databaseUrl,
           dryRun,
           historyTable,
+          historySchema,
           client,
           placeholders: migration,
         })
@@ -642,6 +681,7 @@ export class MigrateService {
               this.historyTableService.getBeforeRunMigrationSql({
                 migration,
                 historyTable,
+                schema: historySchema,
                 installed_rank: nextInstalledRank,
               }),
             ],
@@ -649,6 +689,7 @@ export class MigrateService {
           databaseUrl,
           dryRun,
           historyTable,
+          historySchema,
           client,
           placeholders: migration,
         });
@@ -718,6 +759,7 @@ export class MigrateService {
             statements: [
               this.historyTableService.getAfterRunMigrationSql({
                 historyTable,
+                schema: historySchema,
                 installed_rank: nextInstalledRank,
                 execution_time: +new Date() - +startExecutionTime,
                 success: false,
@@ -727,6 +769,7 @@ export class MigrateService {
           databaseUrl,
           dryRun,
           historyTable,
+          historySchema,
           client,
           placeholders: migration,
         });
@@ -739,6 +782,7 @@ export class MigrateService {
             statements: [
               this.historyTableService.getAfterRunMigrationSql({
                 historyTable,
+                schema: historySchema,
                 installed_rank: nextInstalledRank,
                 execution_time: +new Date() - +startExecutionTime,
                 success: true,
@@ -748,6 +792,7 @@ export class MigrateService {
           databaseUrl,
           dryRun,
           historyTable,
+          historySchema,
           client,
           placeholders: migration,
         });

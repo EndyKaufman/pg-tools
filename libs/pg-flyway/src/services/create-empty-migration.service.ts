@@ -8,7 +8,7 @@ export class CreateEmptyMigrationService {
   protected logger: Logger;
 
   constructor() {
-    this.logger = getLogger(CreateEmptyMigrationService.name);
+    this.logger = getLogger('create');
     this.logger.level = getLogLevel();
   }
 

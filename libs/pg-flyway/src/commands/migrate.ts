@@ -15,9 +15,7 @@ import { MigrateService } from '../services/migrate.service';
 export function migrate(program: Command) {
   program
     .command('migrate')
-    .description(
-      "Migrates the schema to the latest version."
-    )
+    .description('Migrates the schema to the latest version.')
     .addOption(
       new Option('-d,--dry-run <boolean>', 'Show content of migrations without apply them in database.')
         .default('false')
@@ -83,6 +81,7 @@ export function migrate(program: Command) {
           databaseUrl: options.databaseUrl || '',
           locations: options.locations.split(',').map((s) => s.trim()),
           historyTable: options.historyTable,
+          historySchema: options.historySchema,
           sqlMigrationSuffixes: options.sqlMigrationSuffixes.split(',').map((s) => s.trim()),
           sqlMigrationSeparator: options.sqlMigrationSeparator,
           sqlMigrationStatementSeparator: options.sqlMigrationStatementSeparator,

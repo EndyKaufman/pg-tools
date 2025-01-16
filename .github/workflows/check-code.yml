@@ -1,9 +1,9 @@
-name: Release to NPM
+name: Check code
 
 on:
   push:
     branches:
-      - "master"
+      - "develop"
 
 jobs:
   release:
@@ -13,8 +13,6 @@ jobs:
       pull-requests: write # to be able to comment on released pull requests
       id-token: write # to enable use of OIDC for npm provenance
     runs-on: ubuntu-latest
-    env:
-      NX_SKIP_NX_CACHE: true
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -22,13 +20,14 @@ jobs:
         uses: actions/setup-node@v3
         with:
           cache: npm
-          node-version: 20
+          node-version: 22
       - run: yarn install
       - run: npm run generate
       - run: npm run build
       - run: npm run test
-      - run: npx nx run-many --target=semantic-release --all --parallel=false
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - uses: tanmen/jest-reporter@v1
+        if: always()
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          result-file: jest.result.json

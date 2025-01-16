@@ -50,7 +50,8 @@
     "recursive-readdir": "2.2.3",
     "tslib": "^2.3.0",
     "pg": "8.13.1",
-    "date-fns": "4.1.0"
+    "date-fns": "4.1.0",
+    "console-table-printer":"2.12.1"
   },
   "type": "commonjs",
   "main": "./src/index.js",
