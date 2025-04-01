@@ -16,9 +16,9 @@ services:
     tty: true
     restart: 'always'
     environment:
-      POSTGRESQL_USERNAME: 'pgtoolsusername'
+      POSTGRESQL_USERNAME: 'postgres'
       POSTGRESQL_PASSWORD: 'pgtoolspassword'
-      POSTGRESQL_DATABASE: 'pgtoolsdatabase'
+      POSTGRESQL_DATABASE: 'postgres'
 volumes:
   pg-tools-postgre-sql-volume:
     name: 'pg-tools-postgre-sql-volume'

@@ -47,7 +47,7 @@ The result will be the successful creation of an empty migration:
 To apply the created migration, run the following command:
 
 ```sh
-npx pg-flyway migrate --database-url=postgres://pgtoolsusername:pgtoolspassword@localhost:5432/pgtoolsdatabase?schema=public
+npx pg-flyway migrate --database-url=postgres://postgres:pgtoolspassword@localhost:5432/pgtoolsdatabase?schema=public
 ```
 
 The result will be a successful migration:
@@ -55,7 +55,7 @@ The result will be a successful migration:
 ```sh
 [2025-01-16T00:08:39.052] [INFO] MigrateService - Locations: migrations
 [2025-01-16T00:08:39.053] [INFO] MigrateService - HistoryTable: __migrations
-[2025-01-16T00:08:39.053] [INFO] MigrateService - DatabaseUrl: postgres://pgtoolsusername:pgtoolspassword@localhost:5432/pgtoolsdatabase?schema=public
+[2025-01-16T00:08:39.053] [INFO] MigrateService - DatabaseUrl: postgres://postgres:pgtoolspassword@localhost:5432/pgtoolsdatabase?schema=public
 [2025-01-16T00:08:39.074] [INFO] MigrateService - Migrations: 1
 ```
 
@@ -64,14 +64,14 @@ The result will be a successful migration:
 To view a list of completed migrations, run the following command:
 
 ```sh
-npx pg-flyway info --database-url=postgres://pgtoolsusername:pgtoolspassword@localhost:5432/pgtoolsdatabase?schema=public
+npx pg-flyway info --database-url=postgres://postgres:pgtoolspassword@localhost:5432/pgtoolsdatabase?schema=public
 ```
 
 The result will be a table with information about completed migrations:
 
 ```sh
 [2025-01-16T09:15:34.007] [INFO] info - HistoryTable: __migrations
-[2025-01-16T09:15:34.008] [INFO] info - DatabaseUrl: postgres://pgtoolsusername:pgtoolspassword@localhost:5432/pgtoolsdatabase?schema=public
+[2025-01-16T09:15:34.008] [INFO] info - DatabaseUrl: postgres://postgres:pgtoolspassword@localhost:5432/pgtoolsdatabase?schema=public
 [2025-01-16T09:15:34.057] [INFO] info - Migrations: 1
 ┌───────────┬─────────┬─────────────┬──────┬─────────────────────┬─────────┬──────────┐
 │  Category │ Version │ Description │ Type │        Installed On │   State │ Undoable │

@@ -28,6 +28,7 @@
   "scripts": {
     "_____tests_____": "_____tests_____",
     "pg-flyway": "export NX_SKIP_NX_CACHE=true && ./node_modules/.bin/nx build pg-flyway && node dist/libs/pg-flyway/index.js",
+    "pg-create-db": "export NX_SKIP_NX_CACHE=true && ./node_modules/.bin/nx build pg-create-db && node dist/libs/pg-create-db/index.js",
     "test:no-cache": "export NX_SKIP_NX_CACHE=true && npm run test",
     "test": "export NODE_OPTIONS=--experimental-vm-modules && ./node_modules/.bin/nx run-many -t=e2e --parallel=false --json --outputFile=jest.result.json --detectOpenHandles --testLocationInResults --forceExit",
     "_____build_____": "_____build_____",
@@ -48,6 +49,8 @@
   },
   "private": true,
   "devDependencies": {
+    "testcontainers": "8.13.1",
+    "@types/pg": "8.6.5",
     "@commitlint/cli": "^17.0.0",
     "@commitlint/config-conventional": "^17.0.0",
     "@nx/devkit": "20.3.0",
@@ -95,6 +98,7 @@
     "axios": "^1.6.0"
   },
   "dependencies": {
+    "pg-promise": "10.12.0",
     "commander": "13.0.0",
     "crc-32": "1.2.2",
     "cross-path-sort": "1.0.0",
@@ -103,12 +107,14 @@
     "tslib": "^2.3.0",
     "pg": "8.13.1",
     "date-fns": "4.1.0",
-    "console-table-printer":"2.12.1"
+    "connection-string": "4.3.5",
+    "console-table-printer": "2.12.1"
   },
   "nx": {
     "includedScripts": []
   },
   "lint-staged": {
     "*.{js,ts}": "eslint --fix"
-  }
+  },
+  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
 }
