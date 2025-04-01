@@ -1,4 +1,4 @@
-import { DEFAULT_MIGRATE_CONFIG, MgrationFileMetadata, MigrateService, Migration, PoolClient } from 'pg-flyway';
+import { PG_FLYWAY_DEFAULT_MIGRATE_CONFIG, MgrationFileMetadata, MigrateService, Migration, PoolClient } from 'pg-flyway';
 import { BASIC_MIGRATIONS } from './basic-migrations';
 
 describe('Basic migrate with dryRun', () => {
@@ -41,11 +41,11 @@ describe('Basic migrate with dryRun', () => {
     migrateService = new CustomMigrateService({
       dryRun: true,
       databaseUrl: '',
-      locations: DEFAULT_MIGRATE_CONFIG.locations,
-      historyTable: DEFAULT_MIGRATE_CONFIG.historyTable,
-      sqlMigrationSuffixes: DEFAULT_MIGRATE_CONFIG.sqlMigrationSuffixes,
-      sqlMigrationSeparator: DEFAULT_MIGRATE_CONFIG.sqlMigrationSeparator,
-      sqlMigrationStatementSeparator: DEFAULT_MIGRATE_CONFIG.sqlMigrationStatementSeparator,
+      locations: PG_FLYWAY_DEFAULT_MIGRATE_CONFIG.locations,
+      historyTable: PG_FLYWAY_DEFAULT_MIGRATE_CONFIG.historyTable,
+      sqlMigrationSuffixes: PG_FLYWAY_DEFAULT_MIGRATE_CONFIG.sqlMigrationSuffixes,
+      sqlMigrationSeparator: PG_FLYWAY_DEFAULT_MIGRATE_CONFIG.sqlMigrationSeparator,
+      sqlMigrationStatementSeparator: PG_FLYWAY_DEFAULT_MIGRATE_CONFIG.sqlMigrationStatementSeparator,
     });
   });
 

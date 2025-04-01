@@ -1,4 +1,4 @@
-import { FLYWAY_HISTORY_SCHEMA, FLYWAY_HISTORY_TABLE } from '../constants/default';
+import { PG_FLYWAY_DEFAULT_HISTORY_SCHEMA, PG_FLYWAY_DEFAULT_HISTORY_TABLE } from '../constants/default';
 import { Migration } from '../types/migration';
 
 export type History = {
@@ -17,10 +17,10 @@ export type History = {
 export class HistoryTableService {
   constructor(private readonly historyTable?: string, private readonly historySchema?: string) {
     if (!this.historyTable) {
-      this.historyTable = FLYWAY_HISTORY_TABLE;
+      this.historyTable = PG_FLYWAY_DEFAULT_HISTORY_TABLE;
     }
     if (!this.historySchema) {
-      this.historySchema = FLYWAY_HISTORY_SCHEMA;
+      this.historySchema = PG_FLYWAY_DEFAULT_HISTORY_SCHEMA;
     }
   }
 

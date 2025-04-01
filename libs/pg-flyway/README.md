@@ -101,11 +101,12 @@ https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table).
 Usage: pg-flyway create [options]
 
 Options:
-  -n,--name <strings>                    Name the migration.
-  -v,--version <strings>                 Static version, if the value is not passed, then use the current date and time in the format "yyyyMMddkkmm".
-  -l,--locations <strings>               Locations with migration files. (default: "migrations", env: PG_FLYWAY_LOCATIONS)
-  -s,--sql-migration-suffixes <strings>  Extension of migration files. (default: ".sql", env: PG_FLYWAY_SQL_MIGRATION_SUFFIXES)
-  --sql-migration-separator <strings>    Version separator (example: V1__Name.sql, sqlMigrationSeparator= "__"). (default: "__", env: PG_FLYWAY_SQL_MIGRATION_SEPARATOR)
+  -n,--name <strings>                    Name the migration
+  -v,--version <strings>                 Static version, if the value is not passed, then use the current date and time in the format "yyyyMMddkkmm"
+  -l,--locations <strings>               Locations with migration files (default: "migrations", env: PG_FLYWAY_LOCATIONS)
+  -s,--sql-migration-suffixes <strings>  Extension of migration files (default: ".sql", env: PG_FLYWAY_SQL_MIGRATION_SUFFIXES)
+  --sql-migration-separator <strings>    Version separator (example: V1__Name.sql, sqlMigrationSeparator= "__") (default: "__", env:
+                                         PG_FLYWAY_SQL_MIGRATION_SEPARATOR)
   -h, --help                             display help for command
 ```
 
@@ -114,20 +115,23 @@ Options:
 Migrates the schema to the latest version.
 
 ```sh
-Usage: pg-flyway migrate [options]
+Usage: pg-flyway migrateUsage: pg-flyway migrate [options]
 
 Options:
-  -d,--dry-run <boolean>                         Show content of migrations without apply them in database. (default: "false", env: PG_FLYWAY_DRY_RUN)
+  -d,--dry-run <boolean>                         Show content of migrations without apply them in database (default: "false", env: PG_FLYWAY_DRY_RUN)
+  -c,--config <string>                           Configuration file for bulk migrations (example content:
+                                                 [{"databaseUrl":"postgres://\${POSTGRES_USER}:POSTGRES_PASSWORD@localhost:POSTGRES_PORT/POSTGRES_DATABASE?schema=public"}])
+                                                 (default: "pgFlyway", env: PG_FLYWAY_CONFIG)
   -u,--database-url <string>                     Database url for connect (example:
-                                                 postgres://POSTGRES_USER:POSTGRES_PASSWORD@localhost:POSTGRES_PORT/POSTGRES_DATABASE?schema=public). (env:
-                                                 PG_FLYWAY_DATABASE_URL)
-  -l,--locations <strings>                       Locations with migration files. (default: "migrations", env: PG_FLYWAY_LOCATIONS)
-  -h,--history-table <string>                    History table with states of migration. (default: "__migrations", env: PG_FLYWAY_HISTORY_TABLE)
-  --history-schema <string>                      History table schema with states of migration. (default: "public", env: PG_FLYWAY_HISTORY_SCHEMA)
-  -s,--sql-migration-suffixes <strings>          Extension of migration files. (default: ".sql", env: PG_FLYWAY_SQL_MIGRATION_SUFFIXES)
-  --sql-migration-separator <strings>            Version separator (example: V1__Name.sql, sqlMigrationSeparator= "__"). (default: "__", env:
+                                                 postgres://POSTGRES_USER:POSTGRES_PASSWORD@localhost:POSTGRES_PORT/POSTGRES_DATABASE?schema=public) (default: "",
+                                                 env: PG_FLYWAY_DATABASE_URL)
+  -l,--locations <strings>                       Locations with migration files (default: "migrations", env: PG_FLYWAY_LOCATIONS)
+  -h,--history-table <string>                    History table with states of migration (default: "__migrations", env: PG_FLYWAY_HISTORY_TABLE)
+  --history-schema <string>                      History table schema with states of migration (default: "public", env: PG_FLYWAY_HISTORY_SCHEMA)
+  -s,--sql-migration-suffixes <strings>          Extension of migration files (default: ".sql", env: PG_FLYWAY_SQL_MIGRATION_SUFFIXES)
+  --sql-migration-separator <strings>            Version separator (example: V1__Name.sql, sqlMigrationSeparator= "__") (default: "__", env:
                                                  PG_FLYWAY_SQL_MIGRATION_SEPARATOR)
-  --sql-migration-statement-separator <strings>  Separator of nested queries within a sql query. (default: "--", env: PG_FLYWAY_SQL_MIGRATION_STATEMENT_SEPARATOR)
+  --sql-migration-statement-separator <strings>  Separator of nested queries within a sql query (default: "--", env: PG_FLYWAY_SQL_MIGRATION_STATEMENT_SEPARATOR)
   --help                                         display help for command
 ```
 
@@ -139,10 +143,11 @@ Prints the details and status information about all the migrations.
 Usage: pg-flyway info [options]
 
 Options:
-  -u,--database-url <string>   Database url for connect (example: postgres://POSTGRES_USER:POSTGRES_PASSWORD@localhost:POSTGRES_PORT/POSTGRES_DATABASE?schema=public). (env:
+  -u,--database-url <string>   Database url for connect (example:
+                               postgres://POSTGRES_USER:POSTGRES_PASSWORD@localhost:POSTGRES_PORT/POSTGRES_DATABASE?schema=public) (env:
                                PG_FLYWAY_DATABASE_URL)
-  -h,--history-table <string>  History table with states of migration. (default: "__migrations", env: PG_FLYWAY_HISTORY_TABLE)
-  --history-schema <string>    History table schema with states of migration. (default: "public", env: PG_FLYWAY_HISTORY_SCHEMA)
+  -h,--history-table <string>  History table with states of migration (default: "__migrations", env: PG_FLYWAY_HISTORY_TABLE)
+  --history-schema <string>    History table schema with states of migration (default: "public", env: PG_FLYWAY_HISTORY_SCHEMA)
   --help                       display help for command
 ```
 

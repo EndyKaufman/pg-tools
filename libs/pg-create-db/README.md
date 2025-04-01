@@ -55,6 +55,33 @@ docker compose down
 
 This command will stop the container with the PostgreSQL database.
 
+## Extended description of launch parameters
+
+Database creation tool for PostgreSQL database server
+
+```sh
+Usage: pg-create-db [options]
+
+Options:
+  -d,--dry-run <boolean>                Show queries to execute without apply them in database (default: "false", env: PG_CREATE_DB_DRY_RUN)
+  -c,--config <string>                  Configuration file for bulk migrations (example content:
+                                        [{"databaseUrl":"postgres://\${POSTGRES_USER}:POSTGRES_PASSWORD@localhost:POSTGRES_PORT/POSTGRES_DATABASE?schema=public"}])
+                                        (default: "pgCreateDb", env: PG_CREATE_DB_CONFIG)
+  -r,--root-database-url <string>       Database url for connect as root user (example:
+                                        postgres://postgres:ROOT_POSTGRES_PASSWORD@localhost:POSTGRES_PORT/postgres?schema=public) (default: "", env:
+                                        PG_CREATE_DB_ROOT_DATABASE_URL)
+  -a,--app-database-url <string>        Application database url used for create new database (example:
+                                        postgres://POSTGRES_USER:POSTGRES_PASSWORD@localhost:POSTGRES_PORT/POSTGRES_DATABASE?schema=public) (default: "", env:
+                                        PG_CREATE_DB_APP_DATABASE_URL)
+  -n,--force-change-username <boolean>  Force rename username if one exists in database for app-database-url excluding root (default: "false", env:
+                                        PG_CREATE_DB_FORCE_CHANGE_USERNAME)
+  -p,--force-change-password <boolean>  Force change password of specified app-database-url (default: "false", env: PG_CREATE_DB_FORCE_CHANGE_PASSWORD)
+  --drop-app-database <boolean>         Drop application database before try create it (default: "false", env: PG_CREATE_DB_DROP_APP_DATABASE)
+  -e,--extensions <boolean>             Default extensions (default: "uuid-ossp,pg_trgm", env: PG_CREATE_DB_EXTENSIONS)
+  -v, --version                         output the version number
+  -h, --help                            display help for command
+```
+
 ## Links
 
 https://github.com/EndyKaufman/pg-tools - repository with the project

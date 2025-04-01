@@ -1,5 +1,5 @@
 import { join } from 'node:path';
-import { DEFAULT_MIGRATE_CONFIG, MigrateService, Migration } from 'pg-flyway';
+import { PG_FLYWAY_DEFAULT_MIGRATE_CONFIG, MigrateService, Migration } from 'pg-flyway';
 import { BASIC_MIGRATIONS, saveBasicMigrationsToFileSystem } from './basic-migrations';
 import { getPostgres, Pg } from './utils/get-postgres';
 
@@ -15,11 +15,11 @@ describe('Basic migrate with pglite and migration files', () => {
     pg = await getPostgres();
     migrateService = new MigrateService({
       databaseUrl: pg.connectionString,
-      historyTable: DEFAULT_MIGRATE_CONFIG.historyTable,
+      historyTable: PG_FLYWAY_DEFAULT_MIGRATE_CONFIG.historyTable,
       locations: [join(__dirname, 'basic-migrate-with-pglite-and-migration-files')],
-      sqlMigrationSuffixes: DEFAULT_MIGRATE_CONFIG.sqlMigrationSuffixes,
-      sqlMigrationSeparator: DEFAULT_MIGRATE_CONFIG.sqlMigrationSeparator,
-      sqlMigrationStatementSeparator: DEFAULT_MIGRATE_CONFIG.sqlMigrationStatementSeparator,
+      sqlMigrationSuffixes: PG_FLYWAY_DEFAULT_MIGRATE_CONFIG.sqlMigrationSuffixes,
+      sqlMigrationSeparator: PG_FLYWAY_DEFAULT_MIGRATE_CONFIG.sqlMigrationSeparator,
+      sqlMigrationStatementSeparator: PG_FLYWAY_DEFAULT_MIGRATE_CONFIG.sqlMigrationStatementSeparator,
     });
   });
 

@@ -1,5 +1,5 @@
 import { Command, Option } from 'commander';
-import { DEFAULT_MIGRATE_CONFIG } from '../constants/default';
+import { PG_FLYWAY_DEFAULT_MIGRATE_CONFIG } from '../constants/default';
 import {
   PG_FLYWAY_LOCATIONS,
   PG_FLYWAY_SQL_MIGRATION_SEPARATOR,
@@ -11,31 +11,31 @@ export function createEmptyMigration(program: Command) {
   program
     .command('create')
     .description(
-      'Create empty migration named by mask "VyyyyMMddkkmm__Name.sql" (example: V202501151755__Init.sql, Date field symbol table: https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table).'
+      'Create empty migration named by mask "VyyyyMMddkkmm__Name.sql" (example: V202501151755__Init.sql, Date field symbol table: https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)'
     )
-    .addOption(new Option('-n,--name <strings>', 'Name the migration.').makeOptionMandatory())
+    .addOption(new Option('-n,--name <strings>', 'Name the migration').makeOptionMandatory())
     .addOption(
       new Option(
         '-v,--version <strings>',
-        'Static version, if the value is not passed, then use the current date and time in the format "yyyyMMddkkmm".'
+        'Static version, if the value is not passed, then use the current date and time in the format "yyyyMMddkkmm"'
       )
     )
     .addOption(
-      new Option('-l,--locations <strings>', 'Locations with migration files.')
-        .default(DEFAULT_MIGRATE_CONFIG.locations?.join(','))
+      new Option('-l,--locations <strings>', 'Locations with migration files')
+        .default(PG_FLYWAY_DEFAULT_MIGRATE_CONFIG.locations?.join(','))
         .env(PG_FLYWAY_LOCATIONS)
     )
     .addOption(
-      new Option('-s,--sql-migration-suffixes <strings>', 'Extension of migration files.')
-        .default(DEFAULT_MIGRATE_CONFIG.sqlMigrationSuffixes?.join(','))
+      new Option('-s,--sql-migration-suffixes <strings>', 'Extension of migration files')
+        .default(PG_FLYWAY_DEFAULT_MIGRATE_CONFIG.sqlMigrationSuffixes?.join(','))
         .env(PG_FLYWAY_SQL_MIGRATION_SUFFIXES)
     )
     .addOption(
       new Option(
         '--sql-migration-separator <strings>',
-        'Version separator (example: V1__Name.sql, sqlMigrationSeparator= "__").'
+        'Version separator (example: V1__Name.sql, sqlMigrationSeparator= "__")'
       )
-        .default(DEFAULT_MIGRATE_CONFIG.sqlMigrationSeparator)
+        .default(PG_FLYWAY_DEFAULT_MIGRATE_CONFIG.sqlMigrationSeparator)
         .env(PG_FLYWAY_SQL_MIGRATION_SEPARATOR)
     )
     .action(

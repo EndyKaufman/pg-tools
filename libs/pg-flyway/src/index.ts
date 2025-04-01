@@ -14,3 +14,4 @@ export * from './types/package-json';
 export * from './types/pool-client';
 export * from './utils/get-log-level';
 export * from './utils/get-package-json';
+export * from './utils/replace-env';

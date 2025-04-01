@@ -1,5 +1,6 @@
-export const FLYWAY_HISTORY_TABLE = '__migrations';
-export const FLYWAY_HISTORY_SCHEMA = 'public';
+export const PG_FLYWAY_DEFAULT_HISTORY_TABLE = '__migrations';
+export const PG_FLYWAY_DEFAULT_HISTORY_SCHEMA = 'public';
+export const PG_FLYWAY_CONFIG_NAME = 'pgFlyway';
 
 export interface MigrateConfig {
   locations?: string[];
@@ -10,10 +11,10 @@ export interface MigrateConfig {
   sqlMigrationStatementSeparator?: string;
 }
 
-export const DEFAULT_MIGRATE_CONFIG: Required<MigrateConfig> = {
+export const PG_FLYWAY_DEFAULT_MIGRATE_CONFIG: Required<MigrateConfig> = {
   locations: ['migrations'],
-  historyTable: FLYWAY_HISTORY_TABLE,
-  historySchema: FLYWAY_HISTORY_SCHEMA,
+  historyTable: PG_FLYWAY_DEFAULT_HISTORY_TABLE,
+  historySchema: PG_FLYWAY_DEFAULT_HISTORY_SCHEMA,
   sqlMigrationSuffixes: ['.sql'],
   sqlMigrationSeparator: '__',
   sqlMigrationStatementSeparator: '--',

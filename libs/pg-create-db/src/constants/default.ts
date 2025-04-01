@@ -1,0 +1,1 @@
+export const PG_CREATE_DB_CONFIG_NAME = 'pgCreateDb';

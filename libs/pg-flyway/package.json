@@ -43,6 +43,7 @@
     }
   ],
   "dependencies": {
+    "cosmiconfig": "9.0.0",
     "commander": "13.0.0",
     "crc-32": "1.2.2",
     "cross-path-sort": "1.0.0",
