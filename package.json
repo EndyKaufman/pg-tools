@@ -33,6 +33,7 @@
     "test": "export NODE_OPTIONS=--experimental-vm-modules && ./node_modules/.bin/nx run-many -t=e2e --parallel=false --json --outputFile=jest.result.json --detectOpenHandles --testLocationInResults --forceExit",
     "_____build_____": "_____build_____",
     "build": "./node_modules/.bin/nx run-many -t=build --parallel=false",
+    "build:no-cache": "export NX_SKIP_NX_CACHE=true && npm run build",
     "_____lint_____": "_____lint_____",
     "lint": "npm run tsc:lint && ./node_modules/.bin/nx run-many -t=lint --parallel=false",
     "lint:fix": "npm run tsc:lint && ./node_modules/.bin/nx run-many -t=lint --fix --parallel=false",
@@ -93,7 +94,6 @@
     "ts-node": "10.9.1",
     "typescript": "5.6.3",
     "url-loader": "^4.1.1",
-    "verdaccio": "^5.0.4",
     "@electric-sql/pglite": "0.2.15",
     "axios": "^1.6.0"
   },

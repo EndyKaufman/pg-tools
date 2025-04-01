@@ -120,7 +120,7 @@ Usage: pg-flyway migrateUsage: pg-flyway migrate [options]
 Options:
   -d,--dry-run <boolean>                         Show content of migrations without apply them in database (default: "false", env: PG_FLYWAY_DRY_RUN)
   -c,--config <string>                           Configuration file for bulk migrations (example content:
-                                                 [{"databaseUrl":"postgres://\${POSTGRES_USER}:POSTGRES_PASSWORD@localhost:POSTGRES_PORT/POSTGRES_DATABASE?schema=public"}])
+                                                 [{"databaseUrl":"postgres://${POSTGRES_USER}:POSTGRES_PASSWORD@localhost:POSTGRES_PORT/POSTGRES_DATABASE?schema=public"}], rules: https://github.com/cosmiconfig/cosmiconfig)
                                                  (default: "pgFlyway", env: PG_FLYWAY_CONFIG)
   -u,--database-url <string>                     Database url for connect (example:
                                                  postgres://POSTGRES_USER:POSTGRES_PASSWORD@localhost:POSTGRES_PORT/POSTGRES_DATABASE?schema=public) (default: "",

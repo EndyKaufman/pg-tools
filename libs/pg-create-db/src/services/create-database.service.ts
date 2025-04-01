@@ -212,7 +212,7 @@ export class CreateDatabaseService {
     const rootDatabase = this.parseDatabaseUrl(rootDatabaseUrl);
     if (rootDatabase.USERNAME !== 'postgres') {
       throw Error(
-        'The username for the root database must always be "postgres", otherwise the user will not receive "super" rights'
+        `The username for the root database must always be "postgres", otherwise the user will not receive "super" rights, current username "${rootDatabase.USERNAME}"`
       );
     }
   }
@@ -396,14 +396,19 @@ END $$;`*/
     SCHEMAS: string;
     PORT?: number;
   } {
-    const cs = new ConnectionString(databaseUrl);
-    const USERNAME = cs.user;
-    const PASSWORD = cs.password;
-    const PORT = cs.port;
-    const HOST = cs.hosts && cs.hosts[0].toString();
-    const DATABASE = cs.path && cs.path[0];
-    const SCHEMA = cs.params && cs.params['schema'];
-    const SCHEMAS = cs.params && cs.params['schemas'];
-    return { USERNAME, PASSWORD, HOST, DATABASE, SCHEMA, SCHEMAS, PORT };
+    try {
+      const cs = new ConnectionString(databaseUrl);
+      const USERNAME = cs.user;
+      const PASSWORD = cs.password;
+      const PORT = cs.port;
+      const HOST = cs.hosts && cs.hosts[0].toString();
+      const DATABASE = cs.path && cs.path[0];
+      const SCHEMA = cs.params && cs.params['schema'];
+      const SCHEMAS = cs.params && cs.params['schemas'];
+      return { USERNAME, PASSWORD, HOST, DATABASE, SCHEMA, SCHEMAS, PORT };
+    } catch (err) {
+      this.logger.debug({ databaseUrl });
+      throw err;
+    }
   }
 }

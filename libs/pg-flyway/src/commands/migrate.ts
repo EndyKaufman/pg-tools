@@ -1,5 +1,7 @@
 import { Command, Option } from 'commander';
-import { PG_FLYWAY_DEFAULT_MIGRATE_CONFIG, PG_FLYWAY_CONFIG_NAME } from '../constants/default';
+import { cosmiconfig, defaultLoaders } from 'cosmiconfig';
+import { basename, dirname, join, sep } from 'path';
+import { PG_FLYWAY_CONFIG_NAME, PG_FLYWAY_DEFAULT_MIGRATE_CONFIG } from '../constants/default';
 import {
   PG_FLYWAY_CONFIG,
   PG_FLYWAY_DATABASE_URL,
@@ -12,8 +14,6 @@ import {
   PG_FLYWAY_SQL_MIGRATION_SUFFIXES,
 } from '../constants/env-keys';
 import { MigrateService } from '../services/migrate.service';
-import { cosmiconfig } from 'cosmiconfig';
-import { basename, dirname } from 'path';
 import { replaceEnv } from '../utils/replace-env';
 
 export function migrate(program: Command) {
@@ -28,7 +28,7 @@ export function migrate(program: Command) {
     .addOption(
       new Option(
         '-c,--config <string>',
-        'Configuration file for bulk migrations (example content: [{"databaseUrl":"postgres://${POSTGRES_USER}:POSTGRES_PASSWORD@localhost:POSTGRES_PORT/POSTGRES_DATABASE?schema=public"}])'
+        'Configuration file for bulk migrations (example content: [{"databaseUrl":"postgres://${POSTGRES_USER}:POSTGRES_PASSWORD@localhost:POSTGRES_PORT/POSTGRES_DATABASE?schema=public"}], rules: https://github.com/cosmiconfig/cosmiconfig)'
       )
         .default(PG_FLYWAY_CONFIG_NAME)
         .env(PG_FLYWAY_CONFIG)
@@ -96,14 +96,22 @@ export function migrate(program: Command) {
           sqlMigrationSeparator: string;
           sqlMigrationStatementSeparator: string;
         }[] = [];
+
         try {
-          const config = await cosmiconfig(basename(options.config)).search(dirname(options.config) || process.cwd());
+          const dir = dirname(options.config);
+          const searchFrom = dir[0] === '.' ? join(process.cwd(), dir) : dir[0] === sep ? dir : process.cwd();
+          const moduleName = basename(options.config);
+          const config = await cosmiconfig(moduleName, {
+            loaders: defaultLoaders,
+          }).search(searchFrom);
+      
           if (config && !config?.isEmpty) {
             configObjects = Array.isArray(config.config) ? config.config : [config.config];
           }
         } catch (err) {
-          //
+          console.error(err);
         }
+
         if (configObjects.length === 0) {
           const migrateService = new MigrateService({
             dryRun: replaceEnv(options.dryRun) === 'true',

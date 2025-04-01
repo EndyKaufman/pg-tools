@@ -65,7 +65,7 @@ Usage: pg-create-db [options]
 Options:
   -d,--dry-run <boolean>                Show queries to execute without apply them in database (default: "false", env: PG_CREATE_DB_DRY_RUN)
   -c,--config <string>                  Configuration file for bulk migrations (example content:
-                                        [{"databaseUrl":"postgres://\${POSTGRES_USER}:POSTGRES_PASSWORD@localhost:POSTGRES_PORT/POSTGRES_DATABASE?schema=public"}])
+                                        [{"databaseUrl":"postgres://${POSTGRES_USER}:POSTGRES_PASSWORD@localhost:POSTGRES_PORT/POSTGRES_DATABASE?schema=public"}], rules: https://github.com/cosmiconfig/cosmiconfig)
                                         (default: "pgCreateDb", env: PG_CREATE_DB_CONFIG)
   -r,--root-database-url <string>       Database url for connect as root user (example:
                                         postgres://postgres:ROOT_POSTGRES_PASSWORD@localhost:POSTGRES_PORT/postgres?schema=public) (default: "", env:

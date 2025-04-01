@@ -1,4 +1,7 @@
 import { Command, Option } from 'commander';
+import { cosmiconfig, defaultLoaders } from 'cosmiconfig';
+import { basename, dirname, join, sep } from 'path';
+import { PG_CREATE_DB_CONFIG_NAME } from '../constants/default';
 import {
   PG_CREATE_DB_APP_DATABASE_URL,
   PG_CREATE_DB_CONFIG,
@@ -10,9 +13,6 @@ import {
   PG_CREATE_DB_ROOT_DATABASE_URL,
 } from '../constants/env-keys';
 import { CreateDatabaseService } from '../services/create-database.service';
-import { PG_CREATE_DB_CONFIG_NAME } from '../constants/default';
-import { cosmiconfig } from 'cosmiconfig';
-import { basename, dirname } from 'path';
 import { replaceEnv } from '../utils/replace-env';
 
 export function createDatabase(program: Command) {
@@ -25,7 +25,7 @@ export function createDatabase(program: Command) {
     .addOption(
       new Option(
         '-c,--config <string>',
-        'Configuration file for bulk migrations (example content: [{"databaseUrl":"postgres://${POSTGRES_USER}:POSTGRES_PASSWORD@localhost:POSTGRES_PORT/POSTGRES_DATABASE?schema=public"}])'
+        'Configuration file for bulk migrations (example content: [{"databaseUrl":"postgres://${POSTGRES_USER}:POSTGRES_PASSWORD@localhost:POSTGRES_PORT/POSTGRES_DATABASE?schema=public"}], rules: https://github.com/cosmiconfig/cosmiconfig)'
       )
         .default(PG_CREATE_DB_CONFIG_NAME)
         .env(PG_CREATE_DB_CONFIG)
@@ -98,14 +98,22 @@ export async function createDatabaseHandler(options: {
     dropAppDatabase: string;
     extensions: string;
   }[] = [];
+
   try {
-    const config = await cosmiconfig(basename(options.config)).search(dirname(options.config) || process.cwd());
+    const dir = dirname(options.config);
+    const searchFrom = dir[0] === '.' ? join(process.cwd(), dir) : dir[0] === sep ? dir : process.cwd();
+    const moduleName = basename(options.config);
+    const config = await cosmiconfig(moduleName, {
+      loaders: defaultLoaders,
+    }).search(searchFrom);
+
     if (config && !config?.isEmpty) {
       configObjects = Array.isArray(config.config) ? config.config : [config.config];
     }
   } catch (err) {
-    //
+    console.error(err);
   }
+
   if (configObjects.length === 0) {
     const createDatabaseService = new CreateDatabaseService(
       Boolean(replaceEnv(options.dryRun)?.toLowerCase() === 'true')
