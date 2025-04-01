@@ -1,3 +1,15 @@
+# [1.1.0](https://github.com/EndyKaufman/pg-tools/compare/pg-create-db-v1.0.0...pg-create-db-v1.1.0) (2025-04-01)
+
+
+### Bug Fixes
+
+* refactor code of pg-migrate ([3dbd26e](https://github.com/EndyKaufman/pg-tools/commit/3dbd26eb100f91662f570af2455c1fe521a44a40))
+
+
+### Features
+
+* append support load options from config files ([bffc139](https://github.com/EndyKaufman/pg-tools/commit/bffc139412933d6f1c3f0221706bb06c2835ee0f))
+
 # 1.0.0 (2025-04-01)
 
 
