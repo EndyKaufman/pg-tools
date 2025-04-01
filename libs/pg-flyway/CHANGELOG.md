@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/EndyKaufman/pg-tools/compare/pg-flyway-v1.0.2...pg-flyway-v1.1.0) (2025-04-01)
+
+
+### Features
+
+* add new db tools - pg-create-db ([d8bddef](https://github.com/EndyKaufman/pg-tools/commit/d8bddeff53b4fc565642d737d6c88fefd143cd1d))
+
 ## [1.0.2](https://github.com/EndyKaufman/pg-tools/compare/pg-flyway-v1.0.1...pg-flyway-v1.0.2) (2025-02-20)
 
 
