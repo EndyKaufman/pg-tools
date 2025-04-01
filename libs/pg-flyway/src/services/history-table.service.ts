@@ -15,17 +15,20 @@ export type History = {
 };
 
 export class HistoryTableService {
-  getCreateHistoryTableSql({
-    historyTable = FLYWAY_HISTORY_TABLE,
-    schema = FLYWAY_HISTORY_SCHEMA,
-  }: { historyTable?: string; schema?: string } = {}) {
-    return `create table if not exists ${this.getFullHistoryTableName({
-      historyTable,
-      schema,
-    })}
+  constructor(private readonly historyTable?: string, private readonly historySchema?: string) {
+    if (!this.historyTable) {
+      this.historyTable = FLYWAY_HISTORY_TABLE;
+    }
+    if (!this.historySchema) {
+      this.historySchema = FLYWAY_HISTORY_SCHEMA;
+    }
+  }
+
+  getCreateHistoryTableSql() {
+    return `create table if not exists ${this.getFullHistoryTableName()}
 (
     installed_rank integer                 not null
-        constraint ${historyTable}_pk
+        constraint ${this.historyTable}_pk
             primary key,
     version        varchar(50),
     description    varchar(200)            not null,
@@ -38,11 +41,8 @@ export class HistoryTableService {
     success        boolean                 not null
 );
 --
-create index if not exists ${historyTable}_s_idx
-    on ${this.getFullHistoryTableName({
-      historyTable,
-      schema,
-    })} (success);
+create index if not exists ${this.historyTable}_s_idx
+    on ${this.getFullHistoryTableName()} (success);
 --
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 --
@@ -50,45 +50,19 @@ CREATE EXTENSION IF NOT EXISTS "pg_trgm";
 `;
   }
 
-  getMigrationsHistorySql({
-    historyTable = FLYWAY_HISTORY_TABLE,
-    schema = FLYWAY_HISTORY_SCHEMA,
-  }: { historyTable?: string; schema?: string } = {}) {
-    return `select * from ${this.getFullHistoryTableName({
-      historyTable,
-      schema,
-    })} order by installed_rank`;
+  getMigrationsHistorySql() {
+    return `select * from ${this.getFullHistoryTableName()} order by installed_rank`;
   }
 
-  private getFullHistoryTableName({ historyTable, schema }: { historyTable: string; schema: string }) {
-    return `${schema ? `"${schema}"` + '.' : ''}"${historyTable}"`;
+  private getFullHistoryTableName() {
+    return `${this.historySchema ? `"${this.historySchema}"` + '.' : ''}"${this.historyTable}"`;
   }
 
-  getNextInstalledRankSql({
-    historyTable = FLYWAY_HISTORY_TABLE,
-    schema = FLYWAY_HISTORY_SCHEMA,
-  }: {
-    migration: Migration;
-    historyTable?: string;
-    schema?: string;
-  }) {
-    return `select coalesce(max(installed_rank),0)+1 installed_rank from ${this.getFullHistoryTableName({
-      historyTable,
-      schema,
-    })}`;
+  getNextInstalledRankSql() {
+    return `select coalesce(max(installed_rank),0)+1 installed_rank from ${this.getFullHistoryTableName()}`;
   }
 
-  getBeforeRunMigrationSql({
-    migration,
-    historyTable = FLYWAY_HISTORY_TABLE,
-    schema = FLYWAY_HISTORY_SCHEMA,
-    installed_rank,
-  }: {
-    migration: Migration;
-    historyTable?: string;
-    schema?: string;
-    installed_rank: number;
-  }) {
+  getBeforeRunMigrationSql({ migration, installed_rank }: { migration: Migration; installed_rank: number }) {
     const version = migration.version || 'null';
     const description = migration.name;
     const script = migration.script;
@@ -96,10 +70,7 @@ CREATE EXTENSION IF NOT EXISTS "pg_trgm";
     const installed_by = '(SELECT current_user)';
     const execution_time = 0;
     const success = 'false';
-    return `INSERT INTO ${this.getFullHistoryTableName({
-      historyTable,
-      schema,
-    })}
+    return `INSERT INTO ${this.getFullHistoryTableName()}
     (installed_rank, version, description, type, script,
 checksum, installed_by, installed_on, execution_time, success) 
 VALUES
@@ -108,22 +79,15 @@ VALUES
   }
 
   getAfterRunMigrationSql({
-    historyTable = FLYWAY_HISTORY_TABLE,
-    schema = FLYWAY_HISTORY_SCHEMA,
     installed_rank,
     execution_time,
     success,
   }: {
-    historyTable?: string;
-    schema?: string;
     installed_rank: number;
     execution_time: number;
     success: boolean;
   }) {
-    return `UPDATE ${this.getFullHistoryTableName({
-      historyTable,
-      schema,
-    })} SET execution_time=${execution_time}, success=${
+    return `UPDATE ${this.getFullHistoryTableName()} SET execution_time=${execution_time}, success=${
       success ? 'true' : 'false'
     } where installed_rank=${installed_rank};`;
   }

@@ -46,13 +46,14 @@ export function createEmptyMigration(program: Command) {
         sqlMigrationSuffixes: string;
         sqlMigrationSeparator: string;
       }) => {
-        const createEmptyMigrationService = new CreateEmptyMigrationService();
-        await createEmptyMigrationService.createEmptyMigration({
-          name: options.name,
-          version: options.version,
+        const createEmptyMigrationService = new CreateEmptyMigrationService({
           locations: options.locations.split(',').map((s) => s.trim()),
           sqlMigrationSuffixes: options.sqlMigrationSuffixes.split(',').map((s) => s.trim()),
           sqlMigrationSeparator: options.sqlMigrationSeparator,
+        });
+        await createEmptyMigrationService.createEmptyMigration({
+          name: options.name,
+          version: options.version,
         });
       }
     );

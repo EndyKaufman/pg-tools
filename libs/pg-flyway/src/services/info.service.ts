@@ -16,11 +16,17 @@ export class InfoService {
 
   protected historyTableService: HistoryTableService;
 
-  constructor() {
+  constructor(
+    private readonly options: {
+      historyTable: string;
+      historySchema: string;
+      databaseUrl: string;
+    }
+  ) {
     this.logger = getLogger('info');
     this.logger.level = getLogLevel();
 
-    this.historyTableService = new HistoryTableService();
+    this.historyTableService = new HistoryTableService(options.historyTable, options.historySchema);
   }
 
   destroy() {
@@ -30,40 +36,27 @@ export class InfoService {
     }
   }
 
-  async getClient({ databaseUrl, dryRun }: { databaseUrl?: string; dryRun?: boolean }) {
-    if (!dryRun && !this.client) {
+  async getClient() {
+    if (!this.client) {
       if (!this.Pool) {
         // eslint-disable-next-line @typescript-eslint/no-var-requires
         this.Pool = require('pg').Pool;
       }
 
-      const pool = new this.Pool({ connectionString: databaseUrl });
+      const pool = new this.Pool({ connectionString: this.options.databaseUrl });
       this.client = await pool.connect();
     }
     return this.client;
   }
 
-  async info({
-    databaseUrl,
-    historyTable,
-    historySchema,
-  }: {
-    databaseUrl: string;
-    historyTable: string;
-    historySchema: string;
-  }) {
-    this.logger.info(`HistoryTable: ${historyTable}`);
-    this.logger.info(`DatabaseUrl: ${databaseUrl}`);
+  async info() {
+    this.logger.info(`HistoryTable: ${this.options.historyTable}`);
+    this.logger.info(`DatabaseUrl: ${this.options.databaseUrl}`);
 
-    await this.getClient({ databaseUrl });
+    await this.getClient();
 
     const histories: History[] = (
-      await this.client.query(
-        this.historyTableService.getMigrationsHistorySql({
-          historyTable,
-          schema: historySchema,
-        })
-      )
+      await this.client.query(this.historyTableService.getMigrationsHistorySql())
     ).rows.flat();
 
     this.logger.info(`Migrations: ${histories.length}`);

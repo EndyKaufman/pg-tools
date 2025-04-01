@@ -22,11 +22,29 @@ export class MigrateService {
 
   protected historyTableService: HistoryTableService;
 
-  constructor() {
+  constructor(
+    private readonly options: {
+      dryRun?: boolean;
+      historyTable?: string;
+      historySchema?: string;
+      databaseUrl: string;
+      locations: string[];
+      sqlMigrationSuffixes: string[];
+      sqlMigrationSeparator: string;
+      sqlMigrationStatementSeparator: string;
+    }
+  ) {
     this.logger = getLogger('migrate');
     this.logger.level = getLogLevel();
 
-    this.historyTableService = new HistoryTableService();
+    if (!options.dryRun && !options.databaseUrl) {
+      throw Error('databaseUrl not set');
+    }
+    this.historyTableService = new HistoryTableService(options.historyTable, options.historySchema);
+  }
+
+  getHistoryTableService() {
+    return this.historyTableService;
   }
 
   destroy() {
@@ -36,86 +54,44 @@ export class MigrateService {
     }
   }
 
-  async getClient({ databaseUrl, dryRun }: { databaseUrl?: string; dryRun?: boolean }) {
-    if (!dryRun && !this.client) {
+  async getClient() {
+    if (!this.options.dryRun && !this.client) {
       if (!this.Pool) {
         // eslint-disable-next-line @typescript-eslint/no-var-requires
         this.Pool = require('pg').Pool;
       }
 
-      const pool = new this.Pool({ connectionString: databaseUrl });
+      const pool = new this.Pool({ connectionString: this.options.databaseUrl });
       this.client = await pool.connect();
     }
     return this.client;
   }
 
-  async migrate({
-    dryRun,
-    databaseUrl,
-    locations,
-    historyTable,
-    historySchema,
-    sqlMigrationSuffixes,
-    sqlMigrationSeparator,
-    sqlMigrationStatementSeparator,
-  }: {
-    dryRun?: boolean;
-    databaseUrl: string;
-    locations: string[];
-    historyTable: string;
-    historySchema?: string;
-    sqlMigrationSuffixes: string[];
-    sqlMigrationSeparator: string;
-    sqlMigrationStatementSeparator: string;
-  }) {
-    if (dryRun) {
+  async migrate() {
+    if (this.options.dryRun) {
       this.logger.info(`Dry run: true`);
     }
-    this.logger.info(`Locations: ${locations.join(',')}`);
-    this.logger.info(`HistoryTable: ${historyTable}`);
-    this.logger.info(`DatabaseUrl: ${databaseUrl}`);
+    this.logger.info(`Locations: ${this.options.locations.join(',')}`);
+    this.logger.info(`HistoryTable: ${this.options.historyTable}`);
+    this.logger.info(`DatabaseUrl: ${this.options.databaseUrl}`);
 
-    const migrations: Migration[] = await this.getMigrations({
-      dryRun,
-      locations,
-      sqlMigrationSuffixes,
-      sqlMigrationSeparator,
-      sqlMigrationStatementSeparator,
-    });
+    const migrations: Migration[] = await this.getMigrations();
     this.logger.info(`Migrations: ${migrations.filter((m) => m.versioned || m.repeatable || m.undo).length}`);
 
-    await this.getClient({ databaseUrl, dryRun });
+    await this.getClient();
 
     await this.execSqlForStatments({
       migration: Migration.fromStatements({
-        statements: [
-          this.historyTableService.getCreateHistoryTableSql({
-            historyTable,
-            schema: historySchema,
-          }),
-        ],
+        statements: [this.historyTableService.getCreateHistoryTableSql()],
       }),
-      databaseUrl,
-      dryRun,
-      historyTable,
-      historySchema,
       placeholders: {},
     });
 
     const histories = (
       await this.execSqlForStatments<History>({
         migration: Migration.fromStatements({
-          statements: [
-            this.historyTableService.getMigrationsHistorySql({
-              historyTable,
-              schema: historySchema,
-            }),
-          ],
+          statements: [this.historyTableService.getMigrationsHistorySql()],
         }),
-        databaseUrl,
-        dryRun,
-        historyTable,
-        historySchema,
         placeholders: {},
       })
     ).flat();
@@ -129,37 +105,17 @@ export class MigrateService {
       migrations,
       histories,
       collection,
-      databaseUrl,
-      dryRun,
-      historyTable,
-      historySchema,
     });
 
     await this.loopForRepeatableMigrations({
       migrations,
       histories,
       collection,
-      databaseUrl,
-      dryRun,
-      historyTable,
-      historySchema,
     });
   }
 
-  private async getMigrations({
-    dryRun,
-    locations,
-    sqlMigrationSuffixes,
-    sqlMigrationSeparator,
-    sqlMigrationStatementSeparator,
-  }: {
-    dryRun?: boolean;
-    locations: string[];
-    sqlMigrationSuffixes: string[];
-    sqlMigrationSeparator: string;
-    sqlMigrationStatementSeparator: string;
-  }) {
-    const files: MgrationFileMetadata[] = sort(await this.getFiles({ dryRun, locations, sqlMigrationSuffixes }), {
+  private async getMigrations() {
+    const files: MgrationFileMetadata[] = sort(await this.getFiles(), {
       deepFirst: true,
       segmentCompareFn: (a: Migration, b: Migration) =>
         !a.filedir || !b.filedir ? 0 : a.filedir.localeCompare(b.filedir),
@@ -170,8 +126,8 @@ export class MigrateService {
       migrations.push(
         await new Migration(
           file.filepath,
-          sqlMigrationSeparator,
-          sqlMigrationStatementSeparator,
+          this.options.sqlMigrationSeparator,
+          this.options.sqlMigrationStatementSeparator,
           file.sqlMigrationSuffix,
           file.location
         ).fill(await this.loadMigrationFile(file.filepath))
@@ -184,18 +140,10 @@ export class MigrateService {
     migrations,
     histories,
     collection,
-    databaseUrl,
-    dryRun,
-    historyTable,
-    historySchema,
   }: {
     migrations: Migration[];
     histories: History[];
     collection: Collection;
-    databaseUrl: string;
-    dryRun?: boolean;
-    historyTable: string;
-    historySchema?: string;
   }) {
     try {
       for (const migration of migrations.filter(
@@ -222,10 +170,6 @@ export class MigrateService {
           if (migration.filename) {
             await this.execSqlForStatments({
               migration: beforeMigrate,
-              databaseUrl,
-              dryRun,
-              historyTable,
-              historySchema,
               placeholders: migration,
             });
           }
@@ -235,10 +179,6 @@ export class MigrateService {
           if (migration.filename) {
             await this.execSqlForStatments({
               migration: beforeEachMigrate,
-              databaseUrl,
-              dryRun,
-              historyTable,
-              historySchema,
               placeholders: migration,
             });
           }
@@ -248,53 +188,34 @@ export class MigrateService {
           await this.execSqlForStatments({
             placeholders: {},
             migration: migration,
-            databaseUrl,
-            dryRun,
-            historyTable,
-            historySchema,
-            beforeEachStatment: async (client) => {
+            beforeEachStatment: async () => {
               // beforeEachMigrateStatement
               for (const beforeEachMigrateStatement of collection.callback.beforeEachMigrateStatement || []) {
                 if (migration.filename) {
                   await this.execSqlForStatments({
                     migration: beforeEachMigrateStatement,
-                    databaseUrl,
-                    client,
-                    dryRun,
-                    historyTable,
-                    historySchema,
                     placeholders: migration,
                   });
                 }
               }
             },
-            afterEachStatment: async (client) => {
+            afterEachStatment: async () => {
               // afterEachMigrateStatement
               for (const afterEachMigrateStatement of collection.callback.afterEachMigrateStatement || []) {
                 if (migration.filename) {
                   await this.execSqlForStatments({
                     migration: afterEachMigrateStatement,
-                    databaseUrl,
-                    client,
-                    dryRun,
-                    historyTable,
-                    historySchema,
                     placeholders: migration,
                   });
                 }
               }
             },
-            errorEachStatment: async (client) => {
+            errorEachStatment: async () => {
               // afterEachMigrateStatementError
               for (const afterEachMigrateStatementError of collection.callback.afterEachMigrateStatementError || []) {
                 if (migration.filename) {
                   await this.execSqlForStatments({
                     migration: afterEachMigrateStatementError,
-                    databaseUrl,
-                    client,
-                    dryRun,
-                    historyTable,
-                    historySchema,
                     placeholders: migration,
                   });
                 }
@@ -306,10 +227,6 @@ export class MigrateService {
             if (migration.filename) {
               await this.execSqlForStatments({
                 migration: afterEachMigrate,
-                databaseUrl,
-                dryRun,
-                historyTable,
-                historySchema,
                 placeholders: migration,
               });
             }
@@ -322,10 +239,6 @@ export class MigrateService {
             if (migration.filename) {
               await this.execSqlForStatments({
                 migration: afterEachMigrateError,
-                databaseUrl,
-                dryRun,
-                historyTable,
-                historySchema,
                 placeholders: migration,
               });
             }
@@ -337,10 +250,6 @@ export class MigrateService {
       for (const afterMigrate of collection.callback.afterMigrate || []) {
         await this.execSqlForStatments({
           migration: afterMigrate,
-          databaseUrl,
-          dryRun,
-          historyTable,
-          historySchema,
           placeholders: {},
         });
       }
@@ -348,10 +257,6 @@ export class MigrateService {
       for (const afterMigrateApplied of collection.callback.afterMigrateApplied || []) {
         await this.execSqlForStatments({
           migration: afterMigrateApplied,
-          databaseUrl,
-          dryRun,
-          historyTable,
-          historySchema,
           placeholders: {},
         });
       }
@@ -361,10 +266,6 @@ export class MigrateService {
       for (const afterMigrateError of collection.callback.afterMigrateError || []) {
         await this.execSqlForStatments({
           migration: afterMigrateError,
-          databaseUrl,
-          dryRun,
-          historyTable,
-          historySchema,
           placeholders: {},
         });
       }
@@ -377,18 +278,10 @@ export class MigrateService {
     migrations,
     histories,
     collection,
-    databaseUrl,
-    dryRun,
-    historyTable,
-    historySchema,
   }: {
     migrations: Migration[];
     histories: History[];
     collection: Collection;
-    databaseUrl: string;
-    dryRun?: boolean;
-    historyTable: string;
-    historySchema?: string;
   }) {
     try {
       for (const migration of migrations.filter(
@@ -423,10 +316,6 @@ export class MigrateService {
           if (migration.filename) {
             await this.execSqlForStatments({
               migration: beforeMigrate,
-              databaseUrl,
-              dryRun,
-              historyTable,
-              historySchema,
               placeholders: migration,
             });
           }
@@ -436,10 +325,6 @@ export class MigrateService {
           if (migration.filename) {
             await this.execSqlForStatments({
               migration: beforeEachMigrate,
-              databaseUrl,
-              dryRun,
-              historyTable,
-              historySchema,
               placeholders: migration,
             });
           }
@@ -449,53 +334,34 @@ export class MigrateService {
           await this.execSqlForStatments({
             placeholders: {},
             migration: migration,
-            databaseUrl,
-            dryRun,
-            historyTable,
-            historySchema,
-            beforeEachStatment: async (client) => {
+            beforeEachStatment: async () => {
               // beforeEachMigrateStatement
               for (const beforeEachMigrateStatement of collection.callback.beforeEachMigrateStatement || []) {
                 if (migration.filename) {
                   await this.execSqlForStatments({
                     migration: beforeEachMigrateStatement,
-                    databaseUrl,
-                    client,
-                    dryRun,
-                    historyTable,
-                    historySchema,
                     placeholders: migration,
                   });
                 }
               }
             },
-            afterEachStatment: async (client) => {
+            afterEachStatment: async () => {
               // afterEachMigrateStatement
               for (const afterEachMigrateStatement of collection.callback.afterEachMigrateStatement || []) {
                 if (migration.filename) {
                   await this.execSqlForStatments({
                     migration: afterEachMigrateStatement,
-                    databaseUrl,
-                    client,
-                    dryRun,
-                    historyTable,
-                    historySchema,
                     placeholders: migration,
                   });
                 }
               }
             },
-            errorEachStatment: async (client) => {
+            errorEachStatment: async () => {
               // afterEachMigrateStatementError
               for (const afterEachMigrateStatementError of collection.callback.afterEachMigrateStatementError || []) {
                 if (migration.filename) {
                   await this.execSqlForStatments({
                     migration: afterEachMigrateStatementError,
-                    databaseUrl,
-                    client,
-                    dryRun,
-                    historyTable,
-                    historySchema,
                     placeholders: migration,
                   });
                 }
@@ -507,10 +373,6 @@ export class MigrateService {
             if (migration.filename) {
               await this.execSqlForStatments({
                 migration: afterEachMigrate,
-                databaseUrl,
-                dryRun,
-                historyTable,
-                historySchema,
                 placeholders: migration,
               });
             }
@@ -523,10 +385,6 @@ export class MigrateService {
             if (migration.filename) {
               await this.execSqlForStatments({
                 migration: afterEachMigrateError,
-                databaseUrl,
-                dryRun,
-                historyTable,
-                historySchema,
                 placeholders: migration,
               });
             }
@@ -538,10 +396,6 @@ export class MigrateService {
       for (const afterMigrate of collection.callback.afterMigrate || []) {
         await this.execSqlForStatments({
           migration: afterMigrate,
-          databaseUrl,
-          dryRun,
-          historyTable,
-          historySchema,
           placeholders: {},
         });
       }
@@ -549,10 +403,6 @@ export class MigrateService {
       for (const afterMigrateApplied of collection.callback.afterMigrateApplied || []) {
         await this.execSqlForStatments({
           migration: afterMigrateApplied,
-          databaseUrl,
-          dryRun,
-          historyTable,
-          historySchema,
           placeholders: {},
         });
       }
@@ -560,10 +410,6 @@ export class MigrateService {
       for (const afterVersioned of collection.callback.afterVersioned || []) {
         await this.execSqlForStatments({
           migration: afterVersioned,
-          databaseUrl,
-          dryRun,
-          historyTable,
-          historySchema,
           placeholders: {},
         });
       }
@@ -573,10 +419,6 @@ export class MigrateService {
       for (const afterMigrateError of collection.callback.afterMigrateError || []) {
         await this.execSqlForStatments({
           migration: afterMigrateError,
-          databaseUrl,
-          dryRun,
-          historyTable,
-          historySchema,
           placeholders: {},
         });
       }
@@ -592,14 +434,11 @@ export class MigrateService {
   async execSql({
     client,
     query,
-    dryRun,
     placeholders,
   }: {
     client?: PoolClient;
     query: string;
-    dryRun?: boolean;
     migration?: Migration;
-    databaseUrl: string;
     placeholders: Record<string, string>;
   }) {
     let newQuery = query;
@@ -607,7 +446,7 @@ export class MigrateService {
     for (const [key, value] of Object.entries(placeholders)) {
       newQuery = newQuery.replace(new RegExp(`%${key}%`, 'g'), value);
     }
-    if (dryRun || !client) {
+    if (this.options.dryRun || !client) {
       this.logger.info('execSql (dryRun):', newQuery);
     } else {
       const result = await client.query(newQuery);
@@ -618,30 +457,20 @@ export class MigrateService {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async execSqlForStatments<T = any>({
     migration,
-    databaseUrl,
     beforeEachStatment,
     afterEachStatment,
     errorEachStatment,
-    client,
-    dryRun,
-    historyTable,
-    historySchema,
     placeholders,
   }: {
     migration: Migration;
-    databaseUrl: string;
     beforeEachStatment?: (client: PoolClient) => Promise<void>;
     afterEachStatment?: (client: PoolClient) => Promise<void>;
     errorEachStatment?: (client: PoolClient) => Promise<void>;
-    client?: PoolClient;
-    dryRun?: boolean;
-    historyTable?: string;
-    historySchema?: string;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     placeholders: Record<string, any>;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   }): Promise<T[]> {
-    client = await this.getClient({ databaseUrl, dryRun });
+    const client = await this.getClient();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const result: any[] = [];
 
@@ -651,19 +480,8 @@ export class MigrateService {
       const result = (
         await this.execSqlForStatments({
           migration: Migration.fromStatements({
-            statements: [
-              this.historyTableService.getNextInstalledRankSql({
-                migration,
-                historyTable,
-                schema: historySchema,
-              }),
-            ],
+            statements: [this.historyTableService.getNextInstalledRankSql()],
           }),
-          databaseUrl,
-          dryRun,
-          historyTable,
-          historySchema,
-          client,
           placeholders: migration,
         })
       ).flat();
@@ -676,25 +494,16 @@ export class MigrateService {
             statements: [
               this.historyTableService.getBeforeRunMigrationSql({
                 migration,
-                historyTable,
-                schema: historySchema,
                 installed_rank: nextInstalledRank,
               }),
             ],
           }),
-          databaseUrl,
-          dryRun,
-          historyTable,
-          historySchema,
-          client,
           placeholders: migration,
         });
       }
       await this.execSql({
-        databaseUrl,
         migration,
         query: 'BEGIN',
-        dryRun,
         client,
         placeholders,
       });
@@ -705,11 +514,9 @@ export class MigrateService {
         try {
           result.push(
             await this.execSql({
-              databaseUrl,
               migration,
               client,
               query,
-              dryRun,
               placeholders,
             })
           );
@@ -730,10 +537,8 @@ export class MigrateService {
         }
       }
       await this.execSql({
-        databaseUrl,
         migration,
         query: 'COMMIT',
-        dryRun,
         client,
         placeholders,
       });
@@ -742,29 +547,20 @@ export class MigrateService {
           migration: Migration.fromStatements({
             statements: [
               this.historyTableService.getAfterRunMigrationSql({
-                historyTable,
-                schema: historySchema,
                 installed_rank: nextInstalledRank,
                 execution_time: +new Date() - +startExecutionTime,
                 success: true,
               }),
             ],
           }),
-          databaseUrl,
-          dryRun,
-          historyTable,
-          historySchema,
-          client,
           placeholders: migration,
         });
       }
     } catch (err) {
-      if (!dryRun) {
+      if (!this.options.dryRun) {
         await this.execSql({
-          databaseUrl,
           migration,
           query: 'ROLLBACK',
-          dryRun,
           client,
           placeholders,
         });
@@ -774,19 +570,12 @@ export class MigrateService {
           migration: Migration.fromStatements({
             statements: [
               this.historyTableService.getAfterRunMigrationSql({
-                historyTable,
-                schema: historySchema,
                 installed_rank: nextInstalledRank,
                 execution_time: +new Date() - +startExecutionTime,
                 success: false,
               }),
             ],
           }),
-          databaseUrl,
-          dryRun,
-          historyTable,
-          historySchema,
-          client,
           placeholders: migration,
         });
       }
@@ -795,17 +584,10 @@ export class MigrateService {
     return result;
   }
 
-  async getFiles({
-    locations,
-    sqlMigrationSuffixes,
-  }: {
-    dryRun?: boolean;
-    locations: string[];
-    sqlMigrationSuffixes: string[];
-  }): Promise<MgrationFileMetadata[]> {
+  async getFiles(): Promise<MgrationFileMetadata[]> {
     let files: MgrationFileMetadata[] = [];
-    for (const location of locations) {
-      for (const sqlMigrationSuffix of sqlMigrationSuffixes) {
+    for (const location of this.options.locations) {
+      for (const sqlMigrationSuffix of this.options.sqlMigrationSuffixes) {
         files = !existsSync(location)
           ? files
           : [

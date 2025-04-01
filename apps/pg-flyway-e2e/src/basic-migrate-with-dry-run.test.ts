@@ -38,15 +38,7 @@ describe('Basic migrate with dryRun', () => {
 
   beforeAll(async () => {
     // process.env['DEBUG'] = '*';
-    migrateService = new CustomMigrateService();
-  });
-
-  afterAll(async () => {
-    migrateService.destroy();
-  });
-
-  it('Apply migrations and check executed sql scripts', async () => {
-    await migrateService.migrate({
+    migrateService = new CustomMigrateService({
       dryRun: true,
       databaseUrl: '',
       locations: DEFAULT_MIGRATE_CONFIG.locations,
@@ -55,6 +47,14 @@ describe('Basic migrate with dryRun', () => {
       sqlMigrationSeparator: DEFAULT_MIGRATE_CONFIG.sqlMigrationSeparator,
       sqlMigrationStatementSeparator: DEFAULT_MIGRATE_CONFIG.sqlMigrationStatementSeparator,
     });
+  });
+
+  afterAll(async () => {
+    migrateService.destroy();
+  });
+
+  it('Apply migrations and check executed sql scripts', async () => {
+    await migrateService.migrate();
 
     expect(executedSqlQueries).toMatchObject(
       [

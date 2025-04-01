@@ -1,17 +1,10 @@
 import { join } from 'node:path';
-import {
-  DEFAULT_MIGRATE_CONFIG,
-  FLYWAY_HISTORY_TABLE,
-  HistoryTableService,
-  MigrateService,
-  Migration,
-} from 'pg-flyway';
+import { DEFAULT_MIGRATE_CONFIG, MigrateService, Migration } from 'pg-flyway';
 import { BASIC_MIGRATIONS, saveBasicMigrationsToFileSystem } from './basic-migrations';
 import { getPostgres, Pg } from './utils/get-postgres';
 
 describe('Basic migrate with pglite and migration files', () => {
   let migrateService: MigrateService;
-  let historyTableService: HistoryTableService;
   let pg: Pg;
 
   beforeAll(async () => {
@@ -20,17 +13,7 @@ describe('Basic migrate with pglite and migration files', () => {
     await saveBasicMigrationsToFileSystem(join(__dirname, 'basic-migrate-with-pglite-and-migration-files'));
 
     pg = await getPostgres();
-    migrateService = new MigrateService();
-    historyTableService = new HistoryTableService();
-  });
-
-  afterAll(async () => {
-    migrateService.destroy();
-    await pg.teardown();
-  });
-
-  it('Apply migrations', async () => {
-    await migrateService.migrate({
+    migrateService = new MigrateService({
       databaseUrl: pg.connectionString,
       historyTable: DEFAULT_MIGRATE_CONFIG.historyTable,
       locations: [join(__dirname, 'basic-migrate-with-pglite-and-migration-files')],
@@ -40,10 +23,18 @@ describe('Basic migrate with pglite and migration files', () => {
     });
   });
 
+  afterAll(async () => {
+    migrateService.destroy();
+    await pg.teardown();
+  });
+
+  it('Apply migrations', async () => {
+    await migrateService.migrate();
+  });
+
   it('Check data from seed migration in database', async () => {
     const appUserCategories = (
       await migrateService.execSqlForStatments({
-        databaseUrl: pg.connectionString,
         migration: Migration.fromStatements({
           statements: ['select * from "AppUserCategory"'],
         }),
@@ -61,7 +52,6 @@ describe('Basic migrate with pglite and migration files', () => {
   it('Check comment on table from versioned migration in database', async () => {
     const comment = (
       await migrateService.execSqlForStatments({
-        databaseUrl: pg.connectionString,
         migration: Migration.fromStatements({
           statements: [
             `SELECT t.table_name, pg_catalog.obj_description(pgc.oid, 'pg_class')
@@ -85,13 +75,8 @@ describe('Basic migrate with pglite and migration files', () => {
   it('Check migration history table', async () => {
     const migrations = (
       await migrateService.execSqlForStatments({
-        databaseUrl: pg.connectionString,
         migration: Migration.fromStatements({
-          statements: [
-            historyTableService.getMigrationsHistorySql({
-              historyTable: FLYWAY_HISTORY_TABLE,
-            }),
-          ],
+          statements: [migrateService.getHistoryTableService().getMigrationsHistorySql()],
         }),
         placeholders: {},
       })
@@ -146,24 +131,12 @@ INSERT INTO "AppUserCategory" (name, description) VALUES ('Beginner', 'Beginner 
 
     await saveBasicMigrationsToFileSystem(join(__dirname, 'basic-migrate-with-pglite-and-migration-files'));
 
-    await migrateService.migrate({
-      databaseUrl: pg.connectionString,
-      historyTable: DEFAULT_MIGRATE_CONFIG.historyTable,
-      locations: [join(__dirname, 'basic-migrate-with-pglite-and-migration-files')],
-      sqlMigrationSuffixes: DEFAULT_MIGRATE_CONFIG.sqlMigrationSuffixes,
-      sqlMigrationSeparator: DEFAULT_MIGRATE_CONFIG.sqlMigrationSeparator,
-      sqlMigrationStatementSeparator: DEFAULT_MIGRATE_CONFIG.sqlMigrationStatementSeparator,
-    });
+    await migrateService.migrate();
 
     const migrations = (
       await migrateService.execSqlForStatments({
-        databaseUrl: pg.connectionString,
         migration: Migration.fromStatements({
-          statements: [
-            historyTableService.getMigrationsHistorySql({
-              historyTable: FLYWAY_HISTORY_TABLE,
-            }),
-          ],
+          statements: [migrateService.getHistoryTableService().getMigrationsHistorySql()],
         }),
         placeholders: {},
       })
@@ -231,14 +204,7 @@ CREATE INDEX "IDX_APP_USER__CATEGORY_ID" ON "AppUser"("categoryId");`;
     await saveBasicMigrationsToFileSystem(join(__dirname, 'basic-migrate-with-pglite-and-migration-files'));
 
     try {
-      await migrateService.migrate({
-        databaseUrl: pg.connectionString,
-        historyTable: DEFAULT_MIGRATE_CONFIG.historyTable,
-        locations: [join(__dirname, 'basic-migrate-with-pglite-and-migration-files')],
-        sqlMigrationSuffixes: DEFAULT_MIGRATE_CONFIG.sqlMigrationSuffixes,
-        sqlMigrationSeparator: DEFAULT_MIGRATE_CONFIG.sqlMigrationSeparator,
-        sqlMigrationStatementSeparator: DEFAULT_MIGRATE_CONFIG.sqlMigrationStatementSeparator,
-      });
+      await migrateService.migrate();
     } catch (err) {
       expect(err.message).toEqual(
         'Checksum for migration "apps/server/src/migrations/V202401010900__CreateUserTable.sql" are different, in the history table: -720020984, in the file system: 1100360151'
@@ -247,13 +213,8 @@ CREATE INDEX "IDX_APP_USER__CATEGORY_ID" ON "AppUser"("categoryId");`;
 
     const migrations = (
       await migrateService.execSqlForStatments({
-        databaseUrl: pg.connectionString,
         migration: Migration.fromStatements({
-          statements: [
-            historyTableService.getMigrationsHistorySql({
-              historyTable: FLYWAY_HISTORY_TABLE,
-            }),
-          ],
+          statements: [migrateService.getHistoryTableService().getMigrationsHistorySql()],
         }),
         placeholders: {},
       })

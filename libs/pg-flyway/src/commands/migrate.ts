@@ -71,21 +71,17 @@ export function migrate(program: Command) {
         sqlMigrationSeparator: string;
         sqlMigrationStatementSeparator: string;
       }) => {
-        const migrateService = new MigrateService();
-        const dryRun = options.dryRun === 'true';
-        if (!dryRun && !options.databaseUrl) {
-          throw Error('databaseUrl not set');
-        }
-        await migrateService.migrate({
-          dryRun,
-          databaseUrl: options.databaseUrl || '',
-          locations: options.locations.split(',').map((s) => s.trim()),
+        const migrateService = new MigrateService({
+          dryRun: options.dryRun === 'true',
           historyTable: options.historyTable,
           historySchema: options.historySchema,
+          databaseUrl: options.databaseUrl || '',
+          locations: options.locations.split(',').map((s) => s.trim()),
           sqlMigrationSuffixes: options.sqlMigrationSuffixes.split(',').map((s) => s.trim()),
           sqlMigrationSeparator: options.sqlMigrationSeparator,
           sqlMigrationStatementSeparator: options.sqlMigrationStatementSeparator,
         });
+        await migrateService.migrate();
         migrateService.destroy();
       }
     );

@@ -26,12 +26,12 @@ export function info(program: Command) {
         .env(PG_FLYWAY_HISTORY_SCHEMA)
     )
     .action(async (options: { databaseUrl: string; historyTable: string; historySchema: string }) => {
-      const infoService = new InfoService();
-      await infoService.info({
+      const infoService = new InfoService({
         databaseUrl: options.databaseUrl,
         historyTable: options.historyTable,
         historySchema: options.historySchema,
       });
+      await infoService.info();
       infoService.destroy();
     });
 }

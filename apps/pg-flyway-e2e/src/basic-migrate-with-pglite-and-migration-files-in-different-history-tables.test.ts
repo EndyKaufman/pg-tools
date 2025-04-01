@@ -1,5 +1,5 @@
 import { join } from 'node:path';
-import { DEFAULT_MIGRATE_CONFIG, HistoryTableService, MigrateService, Migration } from 'pg-flyway';
+import { DEFAULT_MIGRATE_CONFIG, MigrateService, Migration } from 'pg-flyway';
 import { BASIC_MIGRATIONS, saveBasicMigrationsToFileSystem } from './basic-migrations';
 import { getPostgres, Pg } from './utils/get-postgres';
 
@@ -7,8 +7,8 @@ const __migrations_server_app = '__migrations_server_app';
 const __migrations_server_lib = '__migrations_server_lib';
 
 describe('Basic migrate with pglite and migration files in different history table', () => {
-  let migrateService: MigrateService;
-  let historyTableService: HistoryTableService;
+  let appMigrateService: MigrateService;
+  let libMigrateService: MigrateService;
   let pg: Pg;
 
   beforeAll(async () => {
@@ -19,17 +19,8 @@ describe('Basic migrate with pglite and migration files in different history tab
     );
 
     pg = await getPostgres();
-    migrateService = new MigrateService();
-    historyTableService = new HistoryTableService();
-  });
 
-  afterAll(async () => {
-    migrateService.destroy();
-    await pg.teardown();
-  });
-
-  it('Apply migrations', async () => {
-    await migrateService.migrate({
+    appMigrateService = new MigrateService({
       databaseUrl: pg.connectionString,
       historyTable: __migrations_server_app,
       locations: [
@@ -43,7 +34,7 @@ describe('Basic migrate with pglite and migration files in different history tab
       sqlMigrationStatementSeparator: DEFAULT_MIGRATE_CONFIG.sqlMigrationStatementSeparator,
     });
 
-    await migrateService.migrate({
+    libMigrateService = new MigrateService({
       databaseUrl: pg.connectionString,
       historyTable: __migrations_server_lib,
       locations: [
@@ -58,10 +49,21 @@ describe('Basic migrate with pglite and migration files in different history tab
     });
   });
 
+  afterAll(async () => {
+    appMigrateService.destroy();
+    libMigrateService.destroy();
+    await pg.teardown();
+  });
+
+  it('Apply migrations', async () => {
+    await appMigrateService.migrate();
+
+    await libMigrateService.migrate();
+  });
+
   it('Check data from seed migration in database', async () => {
     const appUserCategories = (
-      await migrateService.execSqlForStatments({
-        databaseUrl: pg.connectionString,
+      await appMigrateService.execSqlForStatments({
         migration: Migration.fromStatements({
           statements: ['select * from "AppUserCategory"'],
         }),
@@ -78,8 +80,7 @@ describe('Basic migrate with pglite and migration files in different history tab
 
   it('Check comment on table from versioned migration in database', async () => {
     const comment = (
-      await migrateService.execSqlForStatments({
-        databaseUrl: pg.connectionString,
+      await appMigrateService.execSqlForStatments({
         migration: Migration.fromStatements({
           statements: [
             `SELECT t.table_name, pg_catalog.obj_description(pgc.oid, 'pg_class')
@@ -102,15 +103,9 @@ describe('Basic migrate with pglite and migration files in different history tab
 
   it('Check migration history table for application', async () => {
     const migrations = (
-      await migrateService.execSqlForStatments({
-        databaseUrl: pg.connectionString,
-        historyTable: __migrations_server_app,
+      await appMigrateService.execSqlForStatments({
         migration: Migration.fromStatements({
-          statements: [
-            historyTableService.getMigrationsHistorySql({
-              historyTable: __migrations_server_app,
-            }),
-          ],
+          statements: [appMigrateService.getHistoryTableService().getMigrationsHistorySql()],
         }),
         placeholders: {},
       })
@@ -146,15 +141,9 @@ describe('Basic migrate with pglite and migration files in different history tab
 
   it('Check migration history table for library', async () => {
     const migrations = (
-      await migrateService.execSqlForStatments({
-        databaseUrl: pg.connectionString,
-        historyTable: __migrations_server_lib,
+      await libMigrateService.execSqlForStatments({
         migration: Migration.fromStatements({
-          statements: [
-            historyTableService.getMigrationsHistorySql({
-              historyTable: __migrations_server_lib,
-            }),
-          ],
+          statements: [libMigrateService.getHistoryTableService().getMigrationsHistorySql()],
         }),
         placeholders: {},
       })
@@ -187,44 +176,14 @@ INSERT INTO "AppUserCategory" (name, description) VALUES ('Beginner', 'Beginner 
       join(__dirname, 'basic-migrate-with-pglite-and-migration-files-in-different-history-tables')
     );
 
-    await migrateService.migrate({
-      databaseUrl: pg.connectionString,
-      historyTable: __migrations_server_app,
-      locations: [
-        join(
-          __dirname,
-          'basic-migrate-with-pglite-and-migration-files-in-different-history-tables/apps/server/src/migrations'
-        ),
-      ],
-      sqlMigrationSuffixes: DEFAULT_MIGRATE_CONFIG.sqlMigrationSuffixes,
-      sqlMigrationSeparator: DEFAULT_MIGRATE_CONFIG.sqlMigrationSeparator,
-      sqlMigrationStatementSeparator: DEFAULT_MIGRATE_CONFIG.sqlMigrationStatementSeparator,
-    });
+    await appMigrateService.migrate();
 
-    await migrateService.migrate({
-      databaseUrl: pg.connectionString,
-      historyTable: __migrations_server_lib,
-      locations: [
-        join(
-          __dirname,
-          'basic-migrate-with-pglite-and-migration-files-in-different-history-tables/libs/server/src/migrations'
-        ),
-      ],
-      sqlMigrationSuffixes: DEFAULT_MIGRATE_CONFIG.sqlMigrationSuffixes,
-      sqlMigrationSeparator: DEFAULT_MIGRATE_CONFIG.sqlMigrationSeparator,
-      sqlMigrationStatementSeparator: DEFAULT_MIGRATE_CONFIG.sqlMigrationStatementSeparator,
-    });
+    await libMigrateService.migrate();
 
     const migrations = (
-      await migrateService.execSqlForStatments({
-        databaseUrl: pg.connectionString,
-        historyTable: __migrations_server_lib,
+      await libMigrateService.execSqlForStatments({
         migration: Migration.fromStatements({
-          statements: [
-            historyTableService.getMigrationsHistorySql({
-              historyTable: __migrations_server_lib,
-            }),
-          ],
+          statements: [libMigrateService.getHistoryTableService().getMigrationsHistorySql()],
         }),
         placeholders: {},
       })
@@ -270,33 +229,9 @@ CREATE INDEX "IDX_APP_USER__CATEGORY_ID" ON "AppUser"("categoryId");`;
     );
 
     try {
-      await migrateService.migrate({
-        databaseUrl: pg.connectionString,
-        historyTable: __migrations_server_app,
-        locations: [
-          join(
-            __dirname,
-            'basic-migrate-with-pglite-and-migration-files-in-different-history-tables/apps/server/src/migrations'
-          ),
-        ],
-        sqlMigrationSuffixes: DEFAULT_MIGRATE_CONFIG.sqlMigrationSuffixes,
-        sqlMigrationSeparator: DEFAULT_MIGRATE_CONFIG.sqlMigrationSeparator,
-        sqlMigrationStatementSeparator: DEFAULT_MIGRATE_CONFIG.sqlMigrationStatementSeparator,
-      });
+      await appMigrateService.migrate();
 
-      await migrateService.migrate({
-        databaseUrl: pg.connectionString,
-        historyTable: __migrations_server_lib,
-        locations: [
-          join(
-            __dirname,
-            'basic-migrate-with-pglite-and-migration-files-in-different-history-tables/libs/server/src/migrations'
-          ),
-        ],
-        sqlMigrationSuffixes: DEFAULT_MIGRATE_CONFIG.sqlMigrationSuffixes,
-        sqlMigrationSeparator: DEFAULT_MIGRATE_CONFIG.sqlMigrationSeparator,
-        sqlMigrationStatementSeparator: DEFAULT_MIGRATE_CONFIG.sqlMigrationStatementSeparator,
-      });
+      await libMigrateService.migrate();
     } catch (err) {
       expect(err.message).toEqual(
         'Checksum for migration "V202401010900__CreateUserTable.sql" are different, in the history table: -720020984, in the file system: 1100360151'
@@ -304,15 +239,9 @@ CREATE INDEX "IDX_APP_USER__CATEGORY_ID" ON "AppUser"("categoryId");`;
     }
 
     const migrations = (
-      await migrateService.execSqlForStatments({
-        databaseUrl: pg.connectionString,
-        historyTable: __migrations_server_app,
+      await appMigrateService.execSqlForStatments({
         migration: Migration.fromStatements({
-          statements: [
-            historyTableService.getMigrationsHistorySql({
-              historyTable: __migrations_server_app,
-            }),
-          ],
+          statements: [appMigrateService.getHistoryTableService().getMigrationsHistorySql()],
         }),
         placeholders: {},
       })
