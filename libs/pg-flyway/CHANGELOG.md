@@ -1,3 +1,10 @@
+## [1.2.1](https://github.com/EndyKaufman/pg-tools/compare/pg-flyway-v1.2.0...pg-flyway-v1.2.1) (2025-04-01)
+
+
+### Bug Fixes
+
+* update work with config files, add tests for it ([4f15ef6](https://github.com/EndyKaufman/pg-tools/commit/4f15ef69cf0152b6fbd6c5f8a9d3587de00deb52))
+
 # [1.2.0](https://github.com/EndyKaufman/pg-tools/compare/pg-flyway-v1.1.0...pg-flyway-v1.2.0) (2025-04-01)
 
 
