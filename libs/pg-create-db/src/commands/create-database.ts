@@ -1,7 +1,7 @@
 import { Command, Option } from 'commander';
 import { cosmiconfig, defaultLoaders } from 'cosmiconfig';
 import { basename, dirname, join, sep } from 'path';
-import { PG_CREATE_DB_DEFAULT_OCONFIG } from '../constants/default';
+import { PG_CREATE_DB_DEFAULT_CONFIG } from '../constants/default';
 import {
   PG_CREATE_DB_APP_DATABASE_URL,
   PG_CREATE_DB_CONFIG,
@@ -20,7 +20,7 @@ export function createDatabase(program: Command) {
   program
     .addOption(
       new Option('-d,--dry-run <boolean>', 'Show queries to execute without apply them in database')
-        .default(PG_CREATE_DB_DEFAULT_OCONFIG.dryRun)
+        .default(PG_CREATE_DB_DEFAULT_CONFIG.dryRun)
         .env(PG_CREATE_DB_DRY_RUN)
     )
     .addOption(
@@ -28,7 +28,7 @@ export function createDatabase(program: Command) {
         '-c,--config <string>',
         'Configuration file for bulk migrations (example content: [{"databaseUrl":"postgres://${POSTGRES_USER}:POSTGRES_PASSWORD@localhost:POSTGRES_PORT/POSTGRES_DATABASE?schema=public"}], rules: https://github.com/cosmiconfig/cosmiconfig)'
       )
-        .default(PG_CREATE_DB_DEFAULT_OCONFIG.config)
+        .default(PG_CREATE_DB_DEFAULT_CONFIG.config)
         .env(PG_CREATE_DB_CONFIG)
     )
     .addOption(
@@ -36,7 +36,7 @@ export function createDatabase(program: Command) {
         '-r,--root-database-url <string>',
         'Database url for connect as root user (example: postgres://postgres:ROOT_POSTGRES_PASSWORD@localhost:POSTGRES_PORT/postgres?schema=public)'
       )
-        .default(PG_CREATE_DB_DEFAULT_OCONFIG.rootDatabaseUrl)
+        .default(PG_CREATE_DB_DEFAULT_CONFIG.rootDatabaseUrl)
         .env(PG_CREATE_DB_ROOT_DATABASE_URL)
     )
     .addOption(
@@ -44,7 +44,7 @@ export function createDatabase(program: Command) {
         '-a,--app-database-url <string>',
         'Application database url used for create new database (example: postgres://POSTGRES_USER:POSTGRES_PASSWORD@localhost:POSTGRES_PORT/POSTGRES_DATABASE?schema=public)'
       )
-        .default(PG_CREATE_DB_DEFAULT_OCONFIG.appDatabaseUrl)
+        .default(PG_CREATE_DB_DEFAULT_CONFIG.appDatabaseUrl)
         .env(PG_CREATE_DB_APP_DATABASE_URL)
     )
     .addOption(
@@ -52,22 +52,22 @@ export function createDatabase(program: Command) {
         '-n,--force-change-username <boolean>',
         'Force rename username if one exists in database for app-database-url excluding root'
       )
-        .default(PG_CREATE_DB_DEFAULT_OCONFIG.forceChangeUsername)
+        .default(PG_CREATE_DB_DEFAULT_CONFIG.forceChangeUsername)
         .env(PG_CREATE_DB_FORCE_CHANGE_USERNAME)
     )
     .addOption(
       new Option('-p,--force-change-password <boolean>', 'Force change password of specified app-database-url')
-        .default(PG_CREATE_DB_DEFAULT_OCONFIG.forceChangePassword)
+        .default(PG_CREATE_DB_DEFAULT_CONFIG.forceChangePassword)
         .env(PG_CREATE_DB_FORCE_CHANGE_PASSWORD)
     )
     .addOption(
       new Option('--drop-app-database <boolean>', 'Drop application database before try create it')
-        .default(PG_CREATE_DB_DEFAULT_OCONFIG.dropAppDatabase)
+        .default(PG_CREATE_DB_DEFAULT_CONFIG.dropAppDatabase)
         .env(PG_CREATE_DB_DROP_APP_DATABASE)
     )
     .addOption(
       new Option('-e,--extensions <boolean>', 'Default extensions')
-        .default(PG_CREATE_DB_DEFAULT_OCONFIG.extensions)
+        .default(PG_CREATE_DB_DEFAULT_CONFIG.extensions)
         .env(PG_CREATE_DB_EXTENSIONS)
     );
 }

@@ -1,5 +1,5 @@
 import { Command, Option } from 'commander';
-import { PG_FLYWAY_DEFAULT_MIGRATE_CONFIG } from '../constants/default';
+import { PG_FLYWAY_DEFAULT_INFO_CONFIG } from '../constants/default';
 import { PG_FLYWAY_DATABASE_URL, PG_FLYWAY_HISTORY_SCHEMA, PG_FLYWAY_HISTORY_TABLE } from '../constants/env-keys';
 import { InfoService } from '../services/info.service';
 import { InfoHandlerOptions } from '../types/info-handler-options';
@@ -28,12 +28,12 @@ export function info(program: Command) {
     )
     .addOption(
       new Option('-h,--history-table <string>', 'History table with states of migration')
-        .default(PG_FLYWAY_DEFAULT_MIGRATE_CONFIG.historyTable)
+        .default(PG_FLYWAY_DEFAULT_INFO_CONFIG.historyTable)
         .env(PG_FLYWAY_HISTORY_TABLE)
     )
     .addOption(
       new Option('--history-schema <string>', 'History table schema with states of migration')
-        .default(PG_FLYWAY_DEFAULT_MIGRATE_CONFIG.historySchema)
+        .default(PG_FLYWAY_DEFAULT_INFO_CONFIG.historySchema)
         .env(PG_FLYWAY_HISTORY_SCHEMA)
     )
     .action((options: InfoHandlerOptions) => infoHandler(options));

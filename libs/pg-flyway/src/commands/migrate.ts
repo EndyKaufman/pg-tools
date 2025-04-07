@@ -1,7 +1,7 @@
 import { Command, Option } from 'commander';
 import { cosmiconfig, defaultLoaders } from 'cosmiconfig';
 import { basename, dirname, join, sep } from 'path';
-import { PG_FLYWAY_CONFIG_NAME, PG_FLYWAY_DEFAULT_MIGRATE_CONFIG } from '../constants/default';
+import { PG_FLYWAY_DEFAULT_MIGRATE_CONFIG } from '../constants/default';
 import {
   PG_FLYWAY_CONFIG,
   PG_FLYWAY_DATABASE_URL,
@@ -91,7 +91,7 @@ export function migrate(program: Command) {
     .description('Migrates the schema to the latest version')
     .addOption(
       new Option('-d,--dry-run <boolean>', 'Show content of migrations without apply them in database')
-        .default('false')
+        .default(PG_FLYWAY_DEFAULT_MIGRATE_CONFIG.dryRun)
         .env(PG_FLYWAY_DRY_RUN)
     )
     .addOption(
@@ -99,7 +99,7 @@ export function migrate(program: Command) {
         '-c,--config <string>',
         'Configuration file for bulk migrations (example content: [{"databaseUrl":"postgres://${POSTGRES_USER}:POSTGRES_PASSWORD@localhost:POSTGRES_PORT/POSTGRES_DATABASE?schema=public"}], rules: https://github.com/cosmiconfig/cosmiconfig)'
       )
-        .default(PG_FLYWAY_CONFIG_NAME)
+        .default(PG_FLYWAY_DEFAULT_MIGRATE_CONFIG.config)
         .env(PG_FLYWAY_CONFIG)
     )
     .addOption(
@@ -107,7 +107,7 @@ export function migrate(program: Command) {
         '-u,--database-url <string>',
         'Database url for connect (example: postgres://POSTGRES_USER:POSTGRES_PASSWORD@localhost:POSTGRES_PORT/POSTGRES_DATABASE?schema=public)'
       )
-        .default('')
+        .default(PG_FLYWAY_DEFAULT_MIGRATE_CONFIG.databaseUrl)
         .env(PG_FLYWAY_DATABASE_URL)
     )
     .addOption(

@@ -1,5 +1,5 @@
 import { Command, Option } from 'commander';
-import { PG_FLYWAY_DEFAULT_MIGRATE_CONFIG } from '../constants/default';
+import { PG_FLYWAY_DEFAULT_CREATE_EMPTY_MIGRATION_CONFIG } from '../constants/default';
 import {
   PG_FLYWAY_LOCATIONS,
   PG_FLYWAY_SQL_MIGRATION_SEPARATOR,
@@ -35,12 +35,12 @@ export function createEmptyMigration(program: Command) {
     )
     .addOption(
       new Option('-l,--locations <strings>', 'Locations with migration files')
-        .default(PG_FLYWAY_DEFAULT_MIGRATE_CONFIG.locations)
+        .default(PG_FLYWAY_DEFAULT_CREATE_EMPTY_MIGRATION_CONFIG.locations)
         .env(PG_FLYWAY_LOCATIONS)
     )
     .addOption(
       new Option('-s,--sql-migration-suffixes <strings>', 'Extension of migration files')
-        .default(PG_FLYWAY_DEFAULT_MIGRATE_CONFIG.sqlMigrationSuffixes)
+        .default(PG_FLYWAY_DEFAULT_CREATE_EMPTY_MIGRATION_CONFIG.sqlMigrationSuffixes)
         .env(PG_FLYWAY_SQL_MIGRATION_SUFFIXES)
     )
     .addOption(
@@ -48,7 +48,7 @@ export function createEmptyMigration(program: Command) {
         '--sql-migration-separator <strings>',
         'Version separator (example: V1__Name.sql, sqlMigrationSeparator= "__")'
       )
-        .default(PG_FLYWAY_DEFAULT_MIGRATE_CONFIG.sqlMigrationSeparator)
+        .default(PG_FLYWAY_DEFAULT_CREATE_EMPTY_MIGRATION_CONFIG.sqlMigrationSeparator)
         .env(PG_FLYWAY_SQL_MIGRATION_SEPARATOR)
     )
     .action((options: CreateEmptyMigrationHandlerOptions) => createEmptyMigrationHandlerOptions(options));
