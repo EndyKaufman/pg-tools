@@ -28,7 +28,7 @@ describe('Basic migrate with pglite and migration files in different locations',
           'basic-migrate-with-pglite-and-migration-files-in-different-locations/libs/server/src/migrations'
         ),
       ],
-      sqlMigrationSuffixes: PG_FLYWAY_DEFAULT_MIGRATE_CONFIG.sqlMigrationSuffixes,
+      sqlMigrationSuffixes: PG_FLYWAY_DEFAULT_MIGRATE_CONFIG.sqlMigrationSuffixes.split(','),
       sqlMigrationSeparator: PG_FLYWAY_DEFAULT_MIGRATE_CONFIG.sqlMigrationSeparator,
       sqlMigrationStatementSeparator: PG_FLYWAY_DEFAULT_MIGRATE_CONFIG.sqlMigrationStatementSeparator,
     });

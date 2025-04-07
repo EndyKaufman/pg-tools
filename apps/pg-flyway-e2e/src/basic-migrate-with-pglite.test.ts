@@ -27,8 +27,8 @@ describe('Basic migrate with pglite', () => {
     migrateService = new CustomMigrateService({
       databaseUrl: pg.connectionString,
       historyTable: PG_FLYWAY_DEFAULT_MIGRATE_CONFIG.historyTable,
-      locations: PG_FLYWAY_DEFAULT_MIGRATE_CONFIG.locations,
-      sqlMigrationSuffixes: PG_FLYWAY_DEFAULT_MIGRATE_CONFIG.sqlMigrationSuffixes,
+      locations: PG_FLYWAY_DEFAULT_MIGRATE_CONFIG.locations.split(','),
+      sqlMigrationSuffixes: PG_FLYWAY_DEFAULT_MIGRATE_CONFIG.sqlMigrationSuffixes.split(','),
       sqlMigrationSeparator: PG_FLYWAY_DEFAULT_MIGRATE_CONFIG.sqlMigrationSeparator,
       sqlMigrationStatementSeparator: PG_FLYWAY_DEFAULT_MIGRATE_CONFIG.sqlMigrationStatementSeparator,
     });

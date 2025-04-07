@@ -41,9 +41,9 @@ describe('Basic migrate with dryRun', () => {
     migrateService = new CustomMigrateService({
       dryRun: true,
       databaseUrl: '',
-      locations: PG_FLYWAY_DEFAULT_MIGRATE_CONFIG.locations,
+      locations: PG_FLYWAY_DEFAULT_MIGRATE_CONFIG.locations.split(','),
       historyTable: PG_FLYWAY_DEFAULT_MIGRATE_CONFIG.historyTable,
-      sqlMigrationSuffixes: PG_FLYWAY_DEFAULT_MIGRATE_CONFIG.sqlMigrationSuffixes,
+      sqlMigrationSuffixes: PG_FLYWAY_DEFAULT_MIGRATE_CONFIG.sqlMigrationSuffixes.split(','),
       sqlMigrationSeparator: PG_FLYWAY_DEFAULT_MIGRATE_CONFIG.sqlMigrationSeparator,
       sqlMigrationStatementSeparator: PG_FLYWAY_DEFAULT_MIGRATE_CONFIG.sqlMigrationStatementSeparator,
     });

@@ -2,6 +2,17 @@ import { Command, Option } from 'commander';
 import { PG_FLYWAY_DEFAULT_MIGRATE_CONFIG } from '../constants/default';
 import { PG_FLYWAY_DATABASE_URL, PG_FLYWAY_HISTORY_SCHEMA, PG_FLYWAY_HISTORY_TABLE } from '../constants/env-keys';
 import { InfoService } from '../services/info.service';
+import { InfoHandlerOptions } from '../types/info-handler-options';
+
+export async function infoHandler(options: InfoHandlerOptions) {
+  const infoService = new InfoService({
+    databaseUrl: options.databaseUrl,
+    historyTable: options.historyTable,
+    historySchema: options.historySchema,
+  });
+  await infoService.info();
+  infoService.destroy();
+}
 
 export function info(program: Command) {
   program
@@ -25,13 +36,5 @@ export function info(program: Command) {
         .default(PG_FLYWAY_DEFAULT_MIGRATE_CONFIG.historySchema)
         .env(PG_FLYWAY_HISTORY_SCHEMA)
     )
-    .action(async (options: { databaseUrl: string; historyTable: string; historySchema: string }) => {
-      const infoService = new InfoService({
-        databaseUrl: options.databaseUrl,
-        historyTable: options.historyTable,
-        historySchema: options.historySchema,
-      });
-      await infoService.info();
-      infoService.destroy();
-    });
+    .action((options: InfoHandlerOptions) => infoHandler(options));
 }

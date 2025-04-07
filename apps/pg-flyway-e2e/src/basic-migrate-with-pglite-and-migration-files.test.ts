@@ -17,7 +17,7 @@ describe('Basic migrate with pglite and migration files', () => {
       databaseUrl: pg.connectionString,
       historyTable: PG_FLYWAY_DEFAULT_MIGRATE_CONFIG.historyTable,
       locations: [join(__dirname, 'basic-migrate-with-pglite-and-migration-files')],
-      sqlMigrationSuffixes: PG_FLYWAY_DEFAULT_MIGRATE_CONFIG.sqlMigrationSuffixes,
+      sqlMigrationSuffixes: PG_FLYWAY_DEFAULT_MIGRATE_CONFIG.sqlMigrationSuffixes.split(','),
       sqlMigrationSeparator: PG_FLYWAY_DEFAULT_MIGRATE_CONFIG.sqlMigrationSeparator,
       sqlMigrationStatementSeparator: PG_FLYWAY_DEFAULT_MIGRATE_CONFIG.sqlMigrationStatementSeparator,
     });

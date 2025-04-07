@@ -6,7 +6,20 @@ import {
   PG_FLYWAY_SQL_MIGRATION_SUFFIXES,
 } from '../constants/env-keys';
 import { CreateEmptyMigrationService } from '../services/create-empty-migration.service';
+import { CreateEmptyMigrationHandlerOptions } from '../types/create-empty-migration-handler-options';
 
+export async function createEmptyMigrationHandlerOptions(options: CreateEmptyMigrationHandlerOptions) {
+  const createEmptyMigrationService = new CreateEmptyMigrationService({
+    locations: options.locations.split(',').map((s) => s.trim()),
+    sqlMigrationSuffixes: options.sqlMigrationSuffixes.split(',').map((s) => s.trim()),
+    sqlMigrationSeparator: options.sqlMigrationSeparator,
+  });
+
+  await createEmptyMigrationService.createEmptyMigration({
+    name: options.name,
+    version: options.version,
+  });
+}
 export function createEmptyMigration(program: Command) {
   program
     .command('create')
@@ -22,12 +35,12 @@ export function createEmptyMigration(program: Command) {
     )
     .addOption(
       new Option('-l,--locations <strings>', 'Locations with migration files')
-        .default(PG_FLYWAY_DEFAULT_MIGRATE_CONFIG.locations?.join(','))
+        .default(PG_FLYWAY_DEFAULT_MIGRATE_CONFIG.locations)
         .env(PG_FLYWAY_LOCATIONS)
     )
     .addOption(
       new Option('-s,--sql-migration-suffixes <strings>', 'Extension of migration files')
-        .default(PG_FLYWAY_DEFAULT_MIGRATE_CONFIG.sqlMigrationSuffixes?.join(','))
+        .default(PG_FLYWAY_DEFAULT_MIGRATE_CONFIG.sqlMigrationSuffixes)
         .env(PG_FLYWAY_SQL_MIGRATION_SUFFIXES)
     )
     .addOption(
@@ -38,23 +51,5 @@ export function createEmptyMigration(program: Command) {
         .default(PG_FLYWAY_DEFAULT_MIGRATE_CONFIG.sqlMigrationSeparator)
         .env(PG_FLYWAY_SQL_MIGRATION_SEPARATOR)
     )
-    .action(
-      async (options: {
-        name: string;
-        version?: string;
-        locations: string;
-        sqlMigrationSuffixes: string;
-        sqlMigrationSeparator: string;
-      }) => {
-        const createEmptyMigrationService = new CreateEmptyMigrationService({
-          locations: options.locations.split(',').map((s) => s.trim()),
-          sqlMigrationSuffixes: options.sqlMigrationSuffixes.split(',').map((s) => s.trim()),
-          sqlMigrationSeparator: options.sqlMigrationSeparator,
-        });
-        await createEmptyMigrationService.createEmptyMigration({
-          name: options.name,
-          version: options.version,
-        });
-      }
-    );
+    .action((options: CreateEmptyMigrationHandlerOptions) => createEmptyMigrationHandlerOptions(options));
 }
