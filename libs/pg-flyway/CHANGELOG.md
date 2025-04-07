@@ -1,3 +1,10 @@
+## [1.2.2](https://github.com/EndyKaufman/pg-tools/compare/pg-flyway-v1.2.1...pg-flyway-v1.2.2) (2025-04-07)
+
+
+### Bug Fixes
+
+* create handler functions for use commands as npm function from nodejs applications ([6a3b731](https://github.com/EndyKaufman/pg-tools/commit/6a3b731ecbda41fa42bbe1a912088badfc59fc72))
+
 ## [1.2.1](https://github.com/EndyKaufman/pg-tools/compare/pg-flyway-v1.2.0...pg-flyway-v1.2.1) (2025-04-01)
 
 
