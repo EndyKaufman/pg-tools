@@ -1,3 +1,10 @@
+## [1.1.3](https://github.com/EndyKaufman/pg-tools/compare/pg-create-db-v1.1.2...pg-create-db-v1.1.3) (2025-04-07)
+
+
+### Bug Fixes
+
+* update default options, add missing keys ([fd09dfe](https://github.com/EndyKaufman/pg-tools/commit/fd09dfe4513a8c9215c77fae982bcfdee160b74e))
+
 ## [1.1.2](https://github.com/EndyKaufman/pg-tools/compare/pg-create-db-v1.1.1...pg-create-db-v1.1.2) (2025-04-07)
 
 
