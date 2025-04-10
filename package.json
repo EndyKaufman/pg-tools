@@ -103,7 +103,6 @@
     "console-table-printer": "2.12.1",
     "cosmiconfig": "9.0.0",
     "crc-32": "1.2.2",
-    "cross-path-sort": "1.0.0",
     "date-fns": "4.1.0",
     "log4js": "6.9.1",
     "natural-orderby": "^5.0.0",

@@ -4781,11 +4781,6 @@ create-require@^1.1.0:
   resolved "https://registry.npmjs.org/create-require/-/create-require-1.1.1.tgz"
   integrity sha512-dcKFX3jn0MpIaXjisoRvexIJVEKzaq7z2rZKxf+MSr9TkdmHmsU4m2lcLojrj/FHl8mk5VxMmYA+ftRkP/3oKQ==
 
-cross-path-sort@1.0.0:
-  version "1.0.0"
-  resolved "https://registry.npmjs.org/cross-path-sort/-/cross-path-sort-1.0.0.tgz"
-  integrity sha512-aNS22Ns5IC2YmotLFBaQLmH+RtRpfjQlnZtUuwlHUaaxMKUeLQ0Pve1c69zgU6jmh2Irug1ZiMex9XkYdm5Mwg==
-
 cross-spawn@^7.0.2, cross-spawn@^7.0.3, cross-spawn@^7.0.6:
   version "7.0.6"
   resolved "https://registry.npmjs.org/cross-spawn/-/cross-spawn-7.0.6.tgz"
