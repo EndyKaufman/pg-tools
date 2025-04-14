@@ -1,6 +1,6 @@
 import { PG_FLYWAY_DEFAULT_MIGRATE_CONFIG, MgrationFileMetadata, MigrateService } from 'pg-flyway';
 
-describe('Ensure test order with old sort', () => {
+describe('Ensure test order', () => {
   let migrateService: MigrateService;
 
   class CustomMigrateService extends MigrateService {
