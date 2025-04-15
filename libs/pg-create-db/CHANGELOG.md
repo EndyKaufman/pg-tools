@@ -1,3 +1,10 @@
+## [1.1.4](https://github.com/EndyKaufman/pg-tools/compare/pg-create-db-v1.1.3...pg-create-db-v1.1.4) (2025-04-15)
+
+
+### Bug Fixes
+
+* files sort order ([d73b330](https://github.com/EndyKaufman/pg-tools/commit/d73b330cce2ecb87878aa4e92c17f8d6e2031fc1))
+
 ## [1.1.3](https://github.com/EndyKaufman/pg-tools/compare/pg-create-db-v1.1.2...pg-create-db-v1.1.3) (2025-04-07)
 
 
