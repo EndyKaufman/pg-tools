@@ -7,9 +7,7 @@ import { CALLBACK_KEYS, MgrationFileMetadata, Migration } from '../types/migrati
 import { PoolClient } from '../types/pool-client';
 import { getLogLevel } from '../utils/get-log-level';
 import { History, HistoryTableService } from './history-table.service';
-
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const { sort } = require('cross-path-sort');
+import { orderBy } from 'natural-orderby';
 
 export class MigrateService {
   protected logger: Logger;
@@ -115,11 +113,7 @@ export class MigrateService {
   }
 
   private async getMigrations() {
-    const files: MgrationFileMetadata[] = sort(await this.getFiles(), {
-      deepFirst: true,
-      segmentCompareFn: (a: Migration, b: Migration) =>
-        !a.filedir || !b.filedir ? 0 : a.filedir.localeCompare(b.filedir),
-    });
+    const files: MgrationFileMetadata[] = orderBy(await this.getFiles(), 'filepath');
 
     const migrations: Migration[] = [];
     for (const file of files) {
