@@ -1,7 +1,7 @@
 {
   "name": "pg-flyway",
   "description": "Migration tool for PostgreSQL database, NodeJS version of Java migration tool - flyway (not wrapper for https://flywaydb.org/documentation/commandline)",
-  "version": "1.2.3",
+  "version": "1.2.4",
   "bin": {
     "pg-flyway": "./index.js"
   },
@@ -47,7 +47,6 @@
     "commander": "13.0.0",
     "crc-32": "1.2.2",
     "log4js": "6.9.1",
-    "natural-orderby": "^5.0.0",
     "recursive-readdir": "2.2.3",
     "tslib": "^2.3.0",
     "pg": "8.13.1",

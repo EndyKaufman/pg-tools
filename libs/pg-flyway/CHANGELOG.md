@@ -1,3 +1,10 @@
+## [1.2.4](https://github.com/EndyKaufman/pg-tools/compare/pg-flyway-v1.2.3...pg-flyway-v1.2.4) (2025-04-15)
+
+
+### Bug Fixes
+
+* files sort order ([d73b330](https://github.com/EndyKaufman/pg-tools/commit/d73b330cce2ecb87878aa4e92c17f8d6e2031fc1))
+
 ## [1.2.3](https://github.com/EndyKaufman/pg-tools/compare/pg-flyway-v1.2.2...pg-flyway-v1.2.3) (2025-04-07)
 
 
