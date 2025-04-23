@@ -17,6 +17,7 @@
         "packageJson": "libs/pg-flyway/package.json",
         "main": "libs/pg-flyway/src/index.ts",
         "assets": [
+          "libs/pg-flyway/package.json",
           "libs/pg-flyway/*.md",
           "libs/pg-flyway/*.js"
         ]

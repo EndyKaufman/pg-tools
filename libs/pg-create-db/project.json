@@ -14,7 +14,7 @@
         "tsConfig": "libs/pg-create-db/tsconfig.lib.json",
         "packageJson": "libs/pg-create-db/package.json",
         "main": "libs/pg-create-db/src/index.ts",
-        "assets": ["libs/pg-create-db/*.md", "libs/pg-create-db/*.js"]
+        "assets": ["libs/pg-create-db/package.json", "libs/pg-create-db/*.md", "libs/pg-create-db/*.js"]
       }
     },
     "publish": {
