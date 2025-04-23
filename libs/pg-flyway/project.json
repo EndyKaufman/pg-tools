@@ -11,6 +11,7 @@
         "{options.outputPath}"
       ],
       "options": {
+        "generatePackageJson":false,
         "outputPath": "dist/libs/pg-flyway",
         "tsConfig": "libs/pg-flyway/tsconfig.lib.json",
         "packageJson": "libs/pg-flyway/package.json",
