@@ -1,3 +1,10 @@
+## [1.1.6](https://github.com/EndyKaufman/pg-tools/compare/pg-create-db-v1.1.5...pg-create-db-v1.1.6) (2025-04-24)
+
+
+### Bug Fixes
+
+* hide password from log ([8e4095e](https://github.com/EndyKaufman/pg-tools/commit/8e4095e54b84ed888db01d4cc2228cb39f3e51e4))
+
 ## [1.1.5](https://github.com/EndyKaufman/pg-tools/compare/pg-create-db-v1.1.4...pg-create-db-v1.1.5) (2025-04-23)
 
 
