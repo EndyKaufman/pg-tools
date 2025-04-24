@@ -1,3 +1,11 @@
+## [1.2.5](https://github.com/EndyKaufman/pg-tools/compare/pg-flyway-v1.2.4...pg-flyway-v1.2.5) (2025-04-23)
+
+
+### Bug Fixes
+
+* add missing dependencies "natural-orderby" ([731aca2](https://github.com/EndyKaufman/pg-tools/commit/731aca2a5d4c48a1740f80342f6c0660a71ab39d))
+* update nx project.json for copy package.json to dist on build ([0dec1ad](https://github.com/EndyKaufman/pg-tools/commit/0dec1ad71da6b533299aee29f2cf2fbb0b257d04))
+
 ## [1.2.4](https://github.com/EndyKaufman/pg-tools/compare/pg-flyway-v1.2.3...pg-flyway-v1.2.4) (2025-04-15)
 
 
