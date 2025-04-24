@@ -8,6 +8,7 @@ import { PoolClient } from '../types/pool-client';
 import { getLogLevel } from '../utils/get-log-level';
 import { History, HistoryTableService } from './history-table.service';
 import { orderBy } from 'natural-orderby';
+import { ConnectionString } from 'connection-string';
 
 export class MigrateService {
   protected logger: Logger;
@@ -71,7 +72,12 @@ export class MigrateService {
     }
     this.logger.info(`Locations: ${this.options.locations.join(',')}`);
     this.logger.info(`HistoryTable: ${this.options.historyTable}`);
-    this.logger.info(`DatabaseUrl: ${this.options.databaseUrl}`);
+    this.logger.info(
+      `DatabaseUrl: ${this.options.databaseUrl.replace(
+        new ConnectionString(this.options.databaseUrl).password || '',
+        '********'
+      )}`
+    );
 
     const migrations: Migration[] = await this.getMigrations();
     this.logger.info(`Migrations: ${migrations.filter((m) => m.versioned || m.repeatable || m.undo).length}`);

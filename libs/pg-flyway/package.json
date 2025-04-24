@@ -52,7 +52,8 @@
     "tslib": "^2.3.0",
     "pg": "8.13.1",
     "date-fns": "4.1.0",
-    "console-table-printer": "2.12.1"
+    "console-table-printer": "2.12.1",
+    "connection-string": "4.3.5"
   },
   "type": "commonjs",
   "main": "./src/index.js",

@@ -1,6 +1,7 @@
 import { getLogger, Logger } from 'log4js';
 import { getLogLevel } from '../utils/get-log-level';
 import { History, HistoryTableService } from './history-table.service';
+import { ConnectionString } from 'connection-string';
 
 import { Table } from 'console-table-printer';
 import { format } from 'date-fns';
@@ -51,7 +52,12 @@ export class InfoService {
 
   async info() {
     this.logger.info(`HistoryTable: ${this.options.historyTable}`);
-    this.logger.info(`DatabaseUrl: ${this.options.databaseUrl}`);
+    this.logger.info(
+      `DatabaseUrl: ${this.options.databaseUrl.replace(
+        new ConnectionString(this.options.databaseUrl).password || '',
+        '********'
+      )}`
+    );
 
     await this.getClient();
 

@@ -204,7 +204,7 @@ export class CreateDatabaseService {
       database: rootDatabase.DATABASE,
     });
 
-    this.logger.debug(`ALTERING PASSWORD OF ${appDatabase.USERNAME} to '${appDatabase.PASSWORD}'`);
+    this.logger.debug(`ALTERING PASSWORD OF ${appDatabase.USERNAME} to '********'`);
     await db.none(`ALTER USER $1:name WITH PASSWORD '${appDatabase.PASSWORD}'`, [appDatabase.USERNAME]);
   }
 
@@ -253,7 +253,7 @@ export class CreateDatabaseService {
 
         if (this.dryRun) {
           this.logger.info(`ALTER USER '${nonRootUsers[0]}':name RENAME TO '${appDatabase.USERNAME}':name`);
-          this.logger.info(`ALTER USER '${appDatabase.USERNAME}':name WITH PASSWORD '${appDatabase.PASSWORD}'`);
+          this.logger.info(`ALTER USER '${appDatabase.USERNAME}':name WITH PASSWORD '********'`);
         } else {
           await db.none(`ALTER USER $1:name RENAME TO $2:name`, [nonRootUsers[0], appDatabase.USERNAME]);
           await db.none(`ALTER USER $1:name WITH PASSWORD '${appDatabase.PASSWORD}'`, [appDatabase.USERNAME]);
@@ -368,9 +368,9 @@ END $$;`*/
     for (const query of createDatabaseQuery) {
       try {
         if (this.dryRun) {
-          this.logger.info(query);
+          this.logger.info(query.replace(appDatabase.PASSWORD || '', '********'));
         } else {
-          this.logger.debug(query);
+          this.logger.debug(query.replace(appDatabase.PASSWORD || '', '********'));
           await client.query(query);
         }
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
