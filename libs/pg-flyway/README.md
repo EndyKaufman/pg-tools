@@ -115,7 +115,7 @@ Options:
 Migrates the schema to the latest version.
 
 ```sh
-Usage: pg-flyway migrateUsage: pg-flyway migrate [options]
+Usage: pg-flyway migrate [options]
 
 Options:
   -d,--dry-run <boolean>                         Show content of migrations without apply them in database (default: "false", env: PG_FLYWAY_DRY_RUN)
