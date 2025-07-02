@@ -1,3 +1,10 @@
+## [1.2.7](https://github.com/EndyKaufman/pg-tools/compare/pg-flyway-v1.2.6...pg-flyway-v1.2.7) (2025-07-02)
+
+
+### Bug Fixes
+
+* hide full query, show only statment query, add support show code and constant of error ([888a363](https://github.com/EndyKaufman/pg-tools/commit/888a363107b4fe64e69cdab00bd717026cb132ab))
+
 ## [1.2.6](https://github.com/EndyKaufman/pg-tools/compare/pg-flyway-v1.2.5...pg-flyway-v1.2.6) (2025-04-24)
 
 
