@@ -115,6 +115,7 @@ export class Migration {
     afterMigrateError?: boolean;
   } = {};
   statements: string[] = [];
+  statementLines: number[] = [];
 
   static fromStatements({ statements }: { statements: string[] }) {
     const m = new Migration();
@@ -192,7 +193,26 @@ export class Migration {
   }
 
   async fill(fileContent: string) {
-    this.statements = fileContent.split(`\n${this.sqlMigrationStatementSeparator}\n`);
+    const fileContentArray = fileContent.split('\n');
+    this.statements = [];
+
+    let statement: string[] = [];
+    for (let index = 0; index < fileContentArray.length; index++) {
+      const line = index + 1;
+      if (
+        fileContentArray[index] !== this.sqlMigrationStatementSeparator &&
+        index != fileContentArray.length - 1
+      ) {
+        statement.push(fileContentArray[index]);
+      } else {
+        if (fileContentArray[index] !== this.sqlMigrationStatementSeparator) {
+          statement.push(fileContentArray[index]);
+        }
+        this.statements = [...this.statements, statement.join('\n')];
+        this.statementLines = [...this.statementLines, line];
+        statement = [];
+      }
+    }
     this.filechecksum = CRC32.bstr(this.stripBom(fileContent.split('\n').join('').toString()));
     return this;
   }

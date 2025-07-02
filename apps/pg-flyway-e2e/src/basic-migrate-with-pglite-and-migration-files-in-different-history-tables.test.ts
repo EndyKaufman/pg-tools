@@ -63,7 +63,7 @@ describe('Basic migrate with pglite and migration files in different history tab
 
   it('Check data from seed migration in database', async () => {
     const appUserCategories = (
-      await appMigrateService.execSqlForStatments({
+      await appMigrateService.execSqlForStatements({
         migration: Migration.fromStatements({
           statements: ['select * from "AppUserCategory"'],
         }),
@@ -80,7 +80,7 @@ describe('Basic migrate with pglite and migration files in different history tab
 
   it('Check comment on table from versioned migration in database', async () => {
     const comment = (
-      await appMigrateService.execSqlForStatments({
+      await appMigrateService.execSqlForStatements({
         migration: Migration.fromStatements({
           statements: [
             `SELECT t.table_name, pg_catalog.obj_description(pgc.oid, 'pg_class')
@@ -103,7 +103,7 @@ describe('Basic migrate with pglite and migration files in different history tab
 
   it('Check migration history table for application', async () => {
     const migrations = (
-      await appMigrateService.execSqlForStatments({
+      await appMigrateService.execSqlForStatements({
         migration: Migration.fromStatements({
           statements: [appMigrateService.getHistoryTableService().getMigrationsHistorySql()],
         }),
@@ -141,7 +141,7 @@ describe('Basic migrate with pglite and migration files in different history tab
 
   it('Check migration history table for library', async () => {
     const migrations = (
-      await libMigrateService.execSqlForStatments({
+      await libMigrateService.execSqlForStatements({
         migration: Migration.fromStatements({
           statements: [libMigrateService.getHistoryTableService().getMigrationsHistorySql()],
         }),
@@ -181,7 +181,7 @@ INSERT INTO "AppUserCategory" (name, description) VALUES ('Beginner', 'Beginner 
     await libMigrateService.migrate();
 
     const migrations = (
-      await libMigrateService.execSqlForStatments({
+      await libMigrateService.execSqlForStatements({
         migration: Migration.fromStatements({
           statements: [libMigrateService.getHistoryTableService().getMigrationsHistorySql()],
         }),
@@ -239,7 +239,7 @@ CREATE INDEX "IDX_APP_USER__CATEGORY_ID" ON "AppUser"("categoryId");`;
     }
 
     const migrations = (
-      await appMigrateService.execSqlForStatments({
+      await appMigrateService.execSqlForStatements({
         migration: Migration.fromStatements({
           statements: [appMigrateService.getHistoryTableService().getMigrationsHistorySql()],
         }),

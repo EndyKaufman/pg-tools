@@ -34,7 +34,7 @@ describe('Basic migrate with pglite and migration files', () => {
 
   it('Check data from seed migration in database', async () => {
     const appUserCategories = (
-      await migrateService.execSqlForStatments({
+      await migrateService.execSqlForStatements({
         migration: Migration.fromStatements({
           statements: ['select * from "AppUserCategory"'],
         }),
@@ -51,7 +51,7 @@ describe('Basic migrate with pglite and migration files', () => {
 
   it('Check comment on table from versioned migration in database', async () => {
     const comment = (
-      await migrateService.execSqlForStatments({
+      await migrateService.execSqlForStatements({
         migration: Migration.fromStatements({
           statements: [
             `SELECT t.table_name, pg_catalog.obj_description(pgc.oid, 'pg_class')
@@ -74,7 +74,7 @@ describe('Basic migrate with pglite and migration files', () => {
 
   it('Check migration history table', async () => {
     const migrations = (
-      await migrateService.execSqlForStatments({
+      await migrateService.execSqlForStatements({
         migration: Migration.fromStatements({
           statements: [migrateService.getHistoryTableService().getMigrationsHistorySql()],
         }),
@@ -134,7 +134,7 @@ INSERT INTO "AppUserCategory" (name, description) VALUES ('Beginner', 'Beginner 
     await migrateService.migrate();
 
     const migrations = (
-      await migrateService.execSqlForStatments({
+      await migrateService.execSqlForStatements({
         migration: Migration.fromStatements({
           statements: [migrateService.getHistoryTableService().getMigrationsHistorySql()],
         }),
@@ -212,7 +212,7 @@ CREATE INDEX "IDX_APP_USER__CATEGORY_ID" ON "AppUser"("categoryId");`;
     }
 
     const migrations = (
-      await migrateService.execSqlForStatments({
+      await migrateService.execSqlForStatements({
         migration: Migration.fromStatements({
           statements: [migrateService.getHistoryTableService().getMigrationsHistorySql()],
         }),

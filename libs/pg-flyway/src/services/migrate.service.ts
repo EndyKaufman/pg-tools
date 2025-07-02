@@ -85,7 +85,7 @@ export class MigrateService {
 
     await this.getClient();
 
-    await this.execSqlForStatments({
+    await this.execSqlForStatements({
       migration: Migration.fromStatements({
         statements: [this.historyTableService.getCreateHistoryTableSql()],
       }),
@@ -93,7 +93,7 @@ export class MigrateService {
     });
 
     const histories = (
-      await this.execSqlForStatments<History>({
+      await this.execSqlForStatements<History>({
         migration: Migration.fromStatements({
           statements: [this.historyTableService.getMigrationsHistorySql()],
         }),
@@ -169,7 +169,7 @@ export class MigrateService {
         // beforeMigrate
         for (const beforeMigrate of collection.callback.beforeMigrate || []) {
           if (migration.filename) {
-            await this.execSqlForStatments({
+            await this.execSqlForStatements({
               migration: beforeMigrate,
               placeholders: migration,
             });
@@ -178,7 +178,7 @@ export class MigrateService {
         // beforeEachMigrate
         for (const beforeEachMigrate of collection.callback.beforeEachMigrate || []) {
           if (migration.filename) {
-            await this.execSqlForStatments({
+            await this.execSqlForStatements({
               migration: beforeEachMigrate,
               placeholders: migration,
             });
@@ -186,36 +186,36 @@ export class MigrateService {
         }
         try {
           // APPLY MIGRATION
-          await this.execSqlForStatments({
+          await this.execSqlForStatements({
             placeholders: {},
             migration: migration,
-            beforeEachStatment: async () => {
+            beforeEachStatement: async () => {
               // beforeEachMigrateStatement
               for (const beforeEachMigrateStatement of collection.callback.beforeEachMigrateStatement || []) {
                 if (migration.filename) {
-                  await this.execSqlForStatments({
+                  await this.execSqlForStatements({
                     migration: beforeEachMigrateStatement,
                     placeholders: migration,
                   });
                 }
               }
             },
-            afterEachStatment: async () => {
+            afterEachStatement: async () => {
               // afterEachMigrateStatement
               for (const afterEachMigrateStatement of collection.callback.afterEachMigrateStatement || []) {
                 if (migration.filename) {
-                  await this.execSqlForStatments({
+                  await this.execSqlForStatements({
                     migration: afterEachMigrateStatement,
                     placeholders: migration,
                   });
                 }
               }
             },
-            errorEachStatment: async () => {
+            errorEachStatement: async () => {
               // afterEachMigrateStatementError
               for (const afterEachMigrateStatementError of collection.callback.afterEachMigrateStatementError || []) {
                 if (migration.filename) {
-                  await this.execSqlForStatments({
+                  await this.execSqlForStatements({
                     migration: afterEachMigrateStatementError,
                     placeholders: migration,
                   });
@@ -226,15 +226,15 @@ export class MigrateService {
           // afterEachMigrate
           for (const afterEachMigrate of collection.callback.afterEachMigrate || []) {
             if (migration.filename) {
-              await this.execSqlForStatments({
+              await this.execSqlForStatements({
                 migration: afterEachMigrate,
                 placeholders: migration,
               });
             }
           }
         } catch (afterEachMigrateError) {
-          const error = Object.entries(PostgresError).find(([code]) =>
-            String(afterEachMigrateError).includes(`'${code}'`),
+          const error = Object.entries(PostgresError).find(([, code]) =>
+            JSON.stringify(afterEachMigrateError).includes(`"${code}"`),
           );
           if (error) {
             this.logger.debug('afterEachMigrateError#code: ', error?.[1]);
@@ -245,7 +245,7 @@ export class MigrateService {
           // afterEachMigrateError
           for (const afterEachMigrateError of collection.callback.afterEachMigrateError || []) {
             if (migration.filename) {
-              await this.execSqlForStatments({
+              await this.execSqlForStatements({
                 migration: afterEachMigrateError,
                 placeholders: migration,
               });
@@ -256,14 +256,14 @@ export class MigrateService {
       }
       // afterMigrate
       for (const afterMigrate of collection.callback.afterMigrate || []) {
-        await this.execSqlForStatments({
+        await this.execSqlForStatements({
           migration: afterMigrate,
           placeholders: {},
         });
       }
       // afterMigrateApplied
       for (const afterMigrateApplied of collection.callback.afterMigrateApplied || []) {
-        await this.execSqlForStatments({
+        await this.execSqlForStatements({
           migration: afterMigrateApplied,
           placeholders: {},
         });
@@ -272,7 +272,7 @@ export class MigrateService {
       this.logger.debug('afterMigrateError#error: ', afterMigrateError);
       // afterVersioned
       for (const afterMigrateError of collection.callback.afterMigrateError || []) {
-        await this.execSqlForStatments({
+        await this.execSqlForStatements({
           migration: afterMigrateError,
           placeholders: {},
         });
@@ -322,7 +322,7 @@ export class MigrateService {
         // beforeMigrate
         for (const beforeMigrate of collection.callback.beforeMigrate || []) {
           if (migration.filename) {
-            await this.execSqlForStatments({
+            await this.execSqlForStatements({
               migration: beforeMigrate,
               placeholders: migration,
             });
@@ -331,7 +331,7 @@ export class MigrateService {
         // beforeEachMigrate
         for (const beforeEachMigrate of collection.callback.beforeEachMigrate || []) {
           if (migration.filename) {
-            await this.execSqlForStatments({
+            await this.execSqlForStatements({
               migration: beforeEachMigrate,
               placeholders: migration,
             });
@@ -339,36 +339,36 @@ export class MigrateService {
         }
         try {
           // APPLY MIGRATION
-          await this.execSqlForStatments({
+          await this.execSqlForStatements({
             placeholders: {},
             migration: migration,
-            beforeEachStatment: async () => {
+            beforeEachStatement: async () => {
               // beforeEachMigrateStatement
               for (const beforeEachMigrateStatement of collection.callback.beforeEachMigrateStatement || []) {
                 if (migration.filename) {
-                  await this.execSqlForStatments({
+                  await this.execSqlForStatements({
                     migration: beforeEachMigrateStatement,
                     placeholders: migration,
                   });
                 }
               }
             },
-            afterEachStatment: async () => {
+            afterEachStatement: async () => {
               // afterEachMigrateStatement
               for (const afterEachMigrateStatement of collection.callback.afterEachMigrateStatement || []) {
                 if (migration.filename) {
-                  await this.execSqlForStatments({
+                  await this.execSqlForStatements({
                     migration: afterEachMigrateStatement,
                     placeholders: migration,
                   });
                 }
               }
             },
-            errorEachStatment: async () => {
+            errorEachStatement: async () => {
               // afterEachMigrateStatementError
               for (const afterEachMigrateStatementError of collection.callback.afterEachMigrateStatementError || []) {
                 if (migration.filename) {
-                  await this.execSqlForStatments({
+                  await this.execSqlForStatements({
                     migration: afterEachMigrateStatementError,
                     placeholders: migration,
                   });
@@ -379,15 +379,15 @@ export class MigrateService {
           // afterEachMigrate
           for (const afterEachMigrate of collection.callback.afterEachMigrate || []) {
             if (migration.filename) {
-              await this.execSqlForStatments({
+              await this.execSqlForStatements({
                 migration: afterEachMigrate,
                 placeholders: migration,
               });
             }
           }
         } catch (afterEachMigrateError) {
-          const error = Object.entries(PostgresError).find(([code]) =>
-            String(afterEachMigrateError).includes(`'${code}'`),
+          const error = Object.entries(PostgresError).find(([, code]) =>
+            JSON.stringify(afterEachMigrateError).includes(`"${code}"`),
           );
           if (error) {
             this.logger.debug('afterEachMigrateError#code: ', error?.[1]);
@@ -398,7 +398,7 @@ export class MigrateService {
           // afterEachMigrateError
           for (const afterEachMigrateError of collection.callback.afterEachMigrateError || []) {
             if (migration.filename) {
-              await this.execSqlForStatments({
+              await this.execSqlForStatements({
                 migration: afterEachMigrateError,
                 placeholders: migration,
               });
@@ -409,21 +409,21 @@ export class MigrateService {
       }
       // afterMigrate
       for (const afterMigrate of collection.callback.afterMigrate || []) {
-        await this.execSqlForStatments({
+        await this.execSqlForStatements({
           migration: afterMigrate,
           placeholders: {},
         });
       }
       // afterMigrateApplied
       for (const afterMigrateApplied of collection.callback.afterMigrateApplied || []) {
-        await this.execSqlForStatments({
+        await this.execSqlForStatements({
           migration: afterMigrateApplied,
           placeholders: {},
         });
       }
       // afterVersioned
       for (const afterVersioned of collection.callback.afterVersioned || []) {
-        await this.execSqlForStatments({
+        await this.execSqlForStatements({
           migration: afterVersioned,
           placeholders: {},
         });
@@ -432,7 +432,7 @@ export class MigrateService {
       this.logger.debug('afterMigrateError#error: ', afterMigrateError);
       // afterVersioned
       for (const afterMigrateError of collection.callback.afterMigrateError || []) {
-        await this.execSqlForStatments({
+        await this.execSqlForStatements({
           migration: afterMigrateError,
           placeholders: {},
         });
@@ -470,17 +470,17 @@ export class MigrateService {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  async execSqlForStatments<T = any>({
+  async execSqlForStatements<T = any>({
     migration,
-    beforeEachStatment,
-    afterEachStatment,
-    errorEachStatment,
+    beforeEachStatement,
+    afterEachStatement,
+    errorEachStatement,
     placeholders,
   }: {
     migration: Migration;
-    beforeEachStatment?: (client: PoolClient) => Promise<void>;
-    afterEachStatment?: (client: PoolClient) => Promise<void>;
-    errorEachStatment?: (client: PoolClient) => Promise<void>;
+    beforeEachStatement?: (client: PoolClient) => Promise<void>;
+    afterEachStatement?: (client: PoolClient) => Promise<void>;
+    errorEachStatement?: (client: PoolClient) => Promise<void>;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     placeholders: Record<string, any>;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -493,7 +493,7 @@ export class MigrateService {
     const startExecutionTime = new Date();
     if (migration.filepath && Object.keys(migration.callback || {}).length === 0) {
       const result = (
-        await this.execSqlForStatments({
+        await this.execSqlForStatements({
           migration: Migration.fromStatements({
             statements: [this.historyTableService.getNextInstalledRankSql()],
           }),
@@ -504,7 +504,7 @@ export class MigrateService {
     }
     try {
       if (migration.filepath && Object.keys(migration.callback || {}).length === 0) {
-        await this.execSqlForStatments({
+        await this.execSqlForStatements({
           migration: Migration.fromStatements({
             statements: [
               this.historyTableService.getBeforeRunMigrationSql({
@@ -522,9 +522,11 @@ export class MigrateService {
         client,
         placeholders,
       });
-      for (const query of migration.statements) {
-        if (beforeEachStatment && client) {
-          await beforeEachStatment(client);
+      for (let index = 0; index < migration.statements.length; index++) {
+        const query = migration.statements[index];
+        const line = (migration.statementLines[index - 1] || 0) + 1;
+        if (beforeEachStatement && client) {
+          await beforeEachStatement(client);
         }
         try {
           result.push(
@@ -535,27 +537,27 @@ export class MigrateService {
               placeholders,
             }),
           );
-          if (afterEachStatment && client) {
-            await afterEachStatment(client);
+          if (afterEachStatement && client) {
+            await afterEachStatement(client);
           }
-        } catch (errorEachStatmentError) {
-          const error = Object.entries(PostgresError).find(([code]) =>
-            String(errorEachStatmentError).includes(`'${code}'`),
+        } catch (errorEachStatementError) {
+          const error = Object.entries(PostgresError).find(([, code]) =>
+            JSON.stringify(errorEachStatementError).includes(`"${code}"`),
           );
           if (error) {
-            this.logger.error('errorEachStatment#code: ', error?.[1]);
-            this.logger.error('errorEachStatment#constant: ', error?.[0].toLowerCase());
+            this.logger.error('errorEachStatement#code: ', error?.[1]);
+            this.logger.error('errorEachStatement#constant: ', error?.[0].toLowerCase());
           }
-          this.logger.info('errorEachStatment#query: ', query);
-          this.logger.info('errorEachStatment#file: ', migration.filepath);
-          this.logger.error('errorEachStatment#error: ', errorEachStatmentError);
           if (migration.filepath) {
-            this.logger.info('filepath: ', migration.filepath);
+            this.logger.error('errorEachStatement#file: ', `${migration.filepath}:${line}:1`);
           }
-          if (errorEachStatment && client) {
-            await errorEachStatment(client);
+          this.logger.error('errorEachStatement#error: ', errorEachStatementError);
+          this.logger.error('errorEachStatement#query: ', query);
+
+          if (errorEachStatement && client) {
+            await errorEachStatement(client);
           }
-          throw errorEachStatmentError;
+          throw errorEachStatementError;
         }
       }
       await this.execSql({
@@ -565,7 +567,7 @@ export class MigrateService {
         placeholders,
       });
       if (migration.filepath && Object.keys(migration.callback || {}).length === 0) {
-        await this.execSqlForStatments({
+        await this.execSqlForStatements({
           migration: Migration.fromStatements({
             statements: [
               this.historyTableService.getAfterRunMigrationSql({
@@ -588,7 +590,7 @@ export class MigrateService {
         });
       }
       if (migration.filepath && Object.keys(migration.callback || {}).length === 0) {
-        await this.execSqlForStatments({
+        await this.execSqlForStatements({
           migration: Migration.fromStatements({
             statements: [
               this.historyTableService.getAfterRunMigrationSql({
