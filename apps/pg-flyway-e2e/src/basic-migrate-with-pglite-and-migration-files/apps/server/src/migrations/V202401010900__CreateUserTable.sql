@@ -1,18 +1,4 @@
-import { mkdir, writeFile } from 'fs/promises';
-import { dirname, join } from 'path';
-
-export async function saveBasicMigrationsToFileSystem(dir: string, date = '202401010900') {
-  const filenames = Object.keys(BASIC_MIGRATIONS);
-  for (const filename of filenames) {
-    const filecontent = BASIC_MIGRATIONS[filename];
-    const fullfulepath = join(dir, filename.split('202401010900').join(date));
-    await mkdir(dirname(fullfulepath), { recursive: true });
-    await writeFile(fullfulepath, filecontent);
-  }
-}
-
-export const BASIC_MIGRATIONS = {
-  [`apps/server/src/migrations/V202401010900__CreateUserTable.sql`]: `-- CreateTable
+-- CreateTable
 CREATE TABLE "AppUserCategory"(
     "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
     name varchar(512) NOT NULL,
@@ -60,8 +46,6 @@ END));
 
 CREATE INDEX "IDX_APP_USER__CATEGORY_ID" ON "AppUser"("categoryId");
 
-`,
-  'apps/server/src/migrations/objects/R__SetAllComments.sql': `COMMENT ON TABLE "AppUser" IS 'Application users';
-COMMENT ON TABLE "AppUserCategory" IS 'Application user categories';`,
-  'libs/server/src/migrations/seeds/R__DefaultCategories.sql': `INSERT INTO "AppUserCategory" (name, description) VALUES ('VIP', 'Users with VIP status') ON CONFLICT (name) DO NOTHING;`,
-};
+;
+--
+CREATE INDEX "IDX_APP_USER__CATEGORY_ID" ON "AppUser"("categoryId");

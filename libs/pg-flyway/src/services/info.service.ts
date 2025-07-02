@@ -22,7 +22,7 @@ export class InfoService {
       historyTable: string;
       historySchema: string;
       databaseUrl: string;
-    }
+    },
   ) {
     this.logger = getLogger('info');
     this.logger.level = getLogLevel();
@@ -54,9 +54,9 @@ export class InfoService {
     this.logger.info(`HistoryTable: ${this.options.historyTable}`);
     this.logger.info(
       `DatabaseUrl: ${this.options.databaseUrl.replace(
-        new ConnectionString(this.options.databaseUrl).password || '',
-        '********'
-      )}`
+        new RegExp(new ConnectionString(this.options.databaseUrl).password || '', 'g'),
+        '********',
+      )}`,
     );
 
     await this.getClient();
@@ -96,7 +96,7 @@ export class InfoService {
           State: state,
           Undoable: undoable,
         },
-        { color }
+        { color },
       );
     }
     p.printTable();

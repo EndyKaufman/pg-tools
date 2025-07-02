@@ -1,14 +1,15 @@
+import { ConnectionString } from 'connection-string';
 import { getLogger, Logger } from 'log4js';
+import { orderBy } from 'natural-orderby';
 import { existsSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
 import recursive from 'recursive-readdir';
+import { PostgresError } from '../constants/postgres-error';
 import { Collection } from '../types/collection';
 import { CALLBACK_KEYS, MgrationFileMetadata, Migration } from '../types/migration';
 import { PoolClient } from '../types/pool-client';
 import { getLogLevel } from '../utils/get-log-level';
 import { History, HistoryTableService } from './history-table.service';
-import { orderBy } from 'natural-orderby';
-import { ConnectionString } from 'connection-string';
 
 export class MigrateService {
   protected logger: Logger;
@@ -31,7 +32,7 @@ export class MigrateService {
       sqlMigrationSuffixes: string[];
       sqlMigrationSeparator: string;
       sqlMigrationStatementSeparator: string;
-    }
+    },
   ) {
     this.logger = getLogger('migrate');
     this.logger.level = getLogLevel();
@@ -74,9 +75,9 @@ export class MigrateService {
     this.logger.info(`HistoryTable: ${this.options.historyTable}`);
     this.logger.info(
       `DatabaseUrl: ${this.options.databaseUrl.replace(
-        new ConnectionString(this.options.databaseUrl).password || '',
-        '********'
-      )}`
+        new RegExp(new ConnectionString(this.options.databaseUrl).password || '', 'g'),
+        '********',
+      )}`,
     );
 
     const migrations: Migration[] = await this.getMigrations();
@@ -129,8 +130,8 @@ export class MigrateService {
           this.options.sqlMigrationSeparator,
           this.options.sqlMigrationStatementSeparator,
           file.sqlMigrationSuffix,
-          file.location
-        ).fill(await this.loadMigrationFile(file.filepath))
+          file.location,
+        ).fill(await this.loadMigrationFile(file.filepath)),
       );
     }
     return migrations;
@@ -147,7 +148,7 @@ export class MigrateService {
   }) {
     try {
       for (const migration of migrations.filter(
-        (m) => m.repeatable && !histories.find((h) => h && h.script === m.script && h.checksum === m.filechecksum)
+        (m) => m.repeatable && !histories.find((h) => h && h.script === m.script && h.checksum === m.filechecksum),
       )) {
         if (migration.filedir !== collection.filedir) {
           collection = {
@@ -160,8 +161,8 @@ export class MigrateService {
           for (const key of CALLBACK_KEYS) {
             collection.callback[key] = migrations.filter(
               (
-                m //m.filedir === migration.filedir &&
-              ) => m.callback?.[key]
+                m, //m.filedir === migration.filedir &&
+              ) => m.callback?.[key],
             );
           }
         }
@@ -232,8 +233,15 @@ export class MigrateService {
             }
           }
         } catch (afterEachMigrateError) {
-          this.logger.error('afterEachMigrateError#error: ', afterEachMigrateError);
-          this.logger.info('afterEachMigrateError#migration: ', migration);
+          const error = Object.entries(PostgresError).find(([code]) =>
+            String(afterEachMigrateError).includes(`'${code}'`),
+          );
+          if (error) {
+            this.logger.debug('afterEachMigrateError#code: ', error?.[1]);
+            this.logger.debug('afterEachMigrateError#constant: ', error?.[0].toLowerCase());
+          }
+          this.logger.debug('afterEachMigrateError#error: ', afterEachMigrateError);
+          this.logger.debug('afterEachMigrateError#migration: ', migration);
           // afterEachMigrateError
           for (const afterEachMigrateError of collection.callback.afterEachMigrateError || []) {
             if (migration.filename) {
@@ -261,7 +269,7 @@ export class MigrateService {
         });
       }
     } catch (afterMigrateError) {
-      this.logger.error('afterMigrateError#error: ', afterMigrateError);
+      this.logger.debug('afterMigrateError#error: ', afterMigrateError);
       // afterVersioned
       for (const afterMigrateError of collection.callback.afterMigrateError || []) {
         await this.execSqlForStatments({
@@ -287,12 +295,12 @@ export class MigrateService {
       for (const migration of migrations.filter(
         (m) =>
           m.versioned &&
-          !histories.find((h) => h && h.script === m.script && h.checksum === m.filechecksum && h.success)
+          !histories.find((h) => h && h.script === m.script && h.checksum === m.filechecksum && h.success),
       )) {
         const history = histories.find((h) => h && h.script === migration.script && h.success);
         if (history && history.checksum !== migration.filechecksum) {
           throw new Error(
-            `Checksum for migration "${history.script}" are different, in the history table: ${history.checksum}, in the file system: ${migration.filechecksum}`
+            `Checksum for migration "${history.script}" are different, in the history table: ${history.checksum}, in the file system: ${migration.filechecksum}`,
           );
         }
         if (migration.filedir !== collection.filedir) {
@@ -306,8 +314,8 @@ export class MigrateService {
           for (const key of CALLBACK_KEYS) {
             collection.callback[key] = migrations.filter(
               (
-                m // m.filedir === migration.filedir &&
-              ) => m.callback?.[key]
+                m, // m.filedir === migration.filedir &&
+              ) => m.callback?.[key],
             );
           }
         }
@@ -378,8 +386,15 @@ export class MigrateService {
             }
           }
         } catch (afterEachMigrateError) {
-          this.logger.error('afterEachMigrateError#error: ', afterEachMigrateError);
-          this.logger.info('afterEachMigrateError#migration: ', migration);
+          const error = Object.entries(PostgresError).find(([code]) =>
+            String(afterEachMigrateError).includes(`'${code}'`),
+          );
+          if (error) {
+            this.logger.debug('afterEachMigrateError#code: ', error?.[1]);
+            this.logger.debug('afterEachMigrateError#constant: ', error?.[0].toLowerCase());
+          }
+          this.logger.debug('afterEachMigrateError#error: ', afterEachMigrateError);
+          this.logger.debug('afterEachMigrateError#migration: ', migration);
           // afterEachMigrateError
           for (const afterEachMigrateError of collection.callback.afterEachMigrateError || []) {
             if (migration.filename) {
@@ -414,7 +429,7 @@ export class MigrateService {
         });
       }
     } catch (afterMigrateError) {
-      this.logger.error('afterMigrateError#error: ', afterMigrateError);
+      this.logger.debug('afterMigrateError#error: ', afterMigrateError);
       // afterVersioned
       for (const afterMigrateError of collection.callback.afterMigrateError || []) {
         await this.execSqlForStatments({
@@ -518,15 +533,22 @@ export class MigrateService {
               client,
               query,
               placeholders,
-            })
+            }),
           );
           if (afterEachStatment && client) {
             await afterEachStatment(client);
           }
         } catch (errorEachStatmentError) {
-          this.logger.error('errorEachStatment#error: ', errorEachStatmentError);
+          const error = Object.entries(PostgresError).find(([code]) =>
+            String(errorEachStatmentError).includes(`'${code}'`),
+          );
+          if (error) {
+            this.logger.error('errorEachStatment#code: ', error?.[1]);
+            this.logger.error('errorEachStatment#constant: ', error?.[0].toLowerCase());
+          }
           this.logger.info('errorEachStatment#query: ', query);
           this.logger.info('errorEachStatment#file: ', migration.filepath);
+          this.logger.error('errorEachStatment#error: ', errorEachStatmentError);
           if (migration.filepath) {
             this.logger.info('filepath: ', migration.filepath);
           }

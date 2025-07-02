@@ -127,7 +127,7 @@ export class Migration {
     public sqlMigrationSeparator?: string,
     public sqlMigrationStatementSeparator?: string,
     public sqlMigrationSuffix?: string,
-    public location?: string
+    public location?: string,
   ) {
     if (this.filepath) {
       this.filedir = dirname(this.filepath);
@@ -192,7 +192,7 @@ export class Migration {
   }
 
   async fill(fileContent: string) {
-    this.statements = fileContent.split('\n--\n');
+    this.statements = fileContent.split(`\n${this.sqlMigrationStatementSeparator}\n`);
     this.filechecksum = CRC32.bstr(this.stripBom(fileContent.split('\n').join('').toString()));
     return this;
   }
