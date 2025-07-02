@@ -1,3 +1,10 @@
+# [1.3.0](https://github.com/EndyKaufman/pg-tools/compare/pg-flyway-v1.2.7...pg-flyway-v1.3.0) (2025-07-02)
+
+
+### Features
+
+* add support show line of statements with error in migration ([3d0c4b7](https://github.com/EndyKaufman/pg-tools/commit/3d0c4b7ad3f0f77bf26330c864771d1e652b47b0))
+
 ## [1.2.7](https://github.com/EndyKaufman/pg-tools/compare/pg-flyway-v1.2.6...pg-flyway-v1.2.7) (2025-07-02)
 
 
