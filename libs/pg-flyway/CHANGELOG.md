@@ -1,3 +1,10 @@
+## [1.3.1](https://github.com/EndyKaufman/pg-tools/compare/pg-flyway-v1.3.0...pg-flyway-v1.3.1) (2025-07-05)
+
+
+### Bug Fixes
+
+* update logic for hide password ([04a4c91](https://github.com/EndyKaufman/pg-tools/commit/04a4c91c3531e7fd645e22bb5343e8b449ffd2da))
+
 # [1.3.0](https://github.com/EndyKaufman/pg-tools/compare/pg-flyway-v1.2.7...pg-flyway-v1.3.0) (2025-07-02)
 
 
