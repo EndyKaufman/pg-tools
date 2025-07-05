@@ -73,12 +73,10 @@ export class MigrateService {
     }
     this.logger.info(`Locations: ${this.options.locations.join(',')}`);
     this.logger.info(`HistoryTable: ${this.options.historyTable}`);
-    this.logger.info(
-      `DatabaseUrl: ${this.options.databaseUrl.replace(
-        new RegExp(new ConnectionString(this.options.databaseUrl).password || '', 'g'),
-        '********',
-      )}`,
-    );
+    const password = new ConnectionString(this.options.databaseUrl).password;
+    if (password) {
+      this.logger.info(`DatabaseUrl: ${this.options.databaseUrl.split(password).join('********')}`);
+    }
 
     const migrations: Migration[] = await this.getMigrations();
     this.logger.info(`Migrations: ${migrations.filter((m) => m.versioned || m.repeatable || m.undo).length}`);

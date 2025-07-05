@@ -12,7 +12,7 @@ export class CreateEmptyMigrationService {
       locations: string[];
       sqlMigrationSuffixes: string[];
       sqlMigrationSeparator: string;
-    }
+    },
   ) {
     this.logger = getLogger('create');
     this.logger.level = getLogLevel();
@@ -29,7 +29,7 @@ export class CreateEmptyMigrationService {
       'V',
       version || format(new Date(), 'yyyyMMddkkmm'),
       this.options.sqlMigrationSeparator,
-      name.replace(new RegExp(' ', 'g'), '-'),
+      name.split(' ').join('-'),
       this.options.sqlMigrationSuffixes[0],
     ].join('');
     const migrationFullname = join(this.options.locations[0], migrationName);

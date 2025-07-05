@@ -52,13 +52,10 @@ export class InfoService {
 
   async info() {
     this.logger.info(`HistoryTable: ${this.options.historyTable}`);
-    this.logger.info(
-      `DatabaseUrl: ${this.options.databaseUrl.replace(
-        new RegExp(new ConnectionString(this.options.databaseUrl).password || '', 'g'),
-        '********',
-      )}`,
-    );
-
+    const password = new ConnectionString(this.options.databaseUrl).password;
+    if (password) {
+      this.logger.info(`DatabaseUrl: ${this.options.databaseUrl.split(password).join('********')}`);
+    }
     await this.getClient();
 
     const histories: History[] = (
