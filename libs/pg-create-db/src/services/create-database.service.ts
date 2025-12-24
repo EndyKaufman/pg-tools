@@ -153,9 +153,9 @@ export class CreateDatabaseService {
     END $$;`
           );
         const pgAppConfig = {
-          user: appDatabase.USERNAME,
+          user: rootDatabase.USERNAME,
           host: (rootDatabase.HOST || '').split(':')[0],
-          password: appDatabase.PASSWORD,
+          password: rootDatabase.PASSWORD,
           port: rootDatabase.PORT,
           database: appDatabase.DATABASE,
           idleTimeoutMillis: 30000,

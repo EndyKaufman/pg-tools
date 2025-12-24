@@ -18,7 +18,7 @@ describe('Postgres config (e2e)', () => {
   const APP2_POSTGRES_DB = 'app2';
 
   beforeAll(async () => {
-    container = await new GenericContainer('bitnami/postgresql:15.5.0')
+    container = await new GenericContainer('public.ecr.aws/bitnami/postgresql:18')
       .withExposedPorts(5432)
       .withEnv('POSTGRESQL_DATABASE', ROOT_POSTGRES_DB)
       .withEnv('POSTGRESQL_USERNAME', ROOT_POSTGRES_USER)

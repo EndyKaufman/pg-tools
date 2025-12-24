@@ -1,6 +1,6 @@
 services:
   pg-tools-postgre-sql:
-    image: 'bitnami/postgresql:15.5.0'
+    image: 'public.ecr.aws/bitnami/postgresql:18'
     container_name: 'pg-tools-postgre-sql'
     volumes:
       - 'pg-tools-postgre-sql-volume:/bitnami/postgresql'

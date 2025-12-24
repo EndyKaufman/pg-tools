@@ -77,7 +77,7 @@ Options:
                                         PG_CREATE_DB_FORCE_CHANGE_USERNAME)
   -p,--force-change-password <boolean>  Force change password of specified app-database-url (default: "false", env: PG_CREATE_DB_FORCE_CHANGE_PASSWORD)
   --drop-app-database <boolean>         Drop application database before try create it (default: "false", env: PG_CREATE_DB_DROP_APP_DATABASE)
-  -e,--extensions <boolean>             Default extensions (default: "uuid-ossp,pg_trgm", env: PG_CREATE_DB_EXTENSIONS)
+  -e,--extensions <string>             Default extensions (default: "uuid-ossp,pg_trgm", env: PG_CREATE_DB_EXTENSIONS)
   -v, --version                         output the version number
   -h, --help                            display help for command
 ```

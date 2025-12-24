@@ -66,7 +66,7 @@ export function createDatabase(program: Command) {
         .env(PG_CREATE_DB_DROP_APP_DATABASE)
     )
     .addOption(
-      new Option('-e,--extensions <boolean>', 'Default extensions')
+      new Option('-e,--extensions <string>', 'Default extensions')
         .default(PG_CREATE_DB_DEFAULT_CONFIG.extensions)
         .env(PG_CREATE_DB_EXTENSIONS)
     );
