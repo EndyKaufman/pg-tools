@@ -1,3 +1,10 @@
+## [1.1.7](https://github.com/EndyKaufman/pg-tools/compare/pg-create-db-v1.1.6...pg-create-db-v1.1.7) (2025-12-24)
+
+
+### Bug Fixes
+
+* change user for CREATE EXTENSION from app user to root user ([#6](https://github.com/EndyKaufman/pg-tools/issues/6)), update description ([#5](https://github.com/EndyKaufman/pg-tools/issues/5)), update image to postgres ([#7](https://github.com/EndyKaufman/pg-tools/issues/7)) ([636303c](https://github.com/EndyKaufman/pg-tools/commit/636303c5e17969b43073864da7c40402285301c2))
+
 ## [1.1.6](https://github.com/EndyKaufman/pg-tools/compare/pg-create-db-v1.1.5...pg-create-db-v1.1.6) (2025-04-24)
 
 
