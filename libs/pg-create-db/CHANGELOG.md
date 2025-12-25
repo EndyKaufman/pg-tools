@@ -1,3 +1,10 @@
+## [1.1.9](https://github.com/EndyKaufman/pg-tools/compare/pg-create-db-v1.1.8...pg-create-db-v1.1.9) (2025-12-25)
+
+
+### Bug Fixes
+
+* add provenance when we publish packages ([4133c62](https://github.com/EndyKaufman/pg-tools/commit/4133c62975e846651a839e65f61b4311607c977a))
+
 ## [1.1.8](https://github.com/EndyKaufman/pg-tools/compare/pg-create-db-v1.1.7...pg-create-db-v1.1.8) (2025-12-25)
 
 
