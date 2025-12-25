@@ -26,7 +26,8 @@
     "npm": ">=6"
   },
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "provenance": true
   },
   "bugs": {
     "url": "https://github.com/EndyKaufman/pg-tools/issues"
