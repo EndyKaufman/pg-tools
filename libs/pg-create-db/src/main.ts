@@ -18,3 +18,5 @@ if (checkToRunCreateDatabaseHandler(program.opts())) {
     program.help();
   }
 }
+
+// fake changes for missing bump version
