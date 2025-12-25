@@ -18,3 +18,5 @@ program.parse(process.argv);
 if (!program.args.length) {
   program.help();
 }
+
+// fake changes for missing bump version v1
