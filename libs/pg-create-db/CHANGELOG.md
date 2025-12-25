@@ -1,3 +1,10 @@
+## [1.1.8](https://github.com/EndyKaufman/pg-tools/compare/pg-create-db-v1.1.7...pg-create-db-v1.1.8) (2025-12-25)
+
+
+### Bug Fixes
+
+* fake updates for correct publish to npm ([923479d](https://github.com/EndyKaufman/pg-tools/commit/923479db6a8a08cd6f265a6889c8be03fd4445be))
+
 ## [1.1.7](https://github.com/EndyKaufman/pg-tools/compare/pg-create-db-v1.1.6...pg-create-db-v1.1.7) (2025-12-24)
 
 
