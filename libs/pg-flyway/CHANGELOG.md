@@ -1,3 +1,10 @@
+## [1.3.2](https://github.com/EndyKaufman/pg-tools/compare/pg-flyway-v1.3.1...pg-flyway-v1.3.2) (2025-12-25)
+
+
+### Bug Fixes
+
+* add provenance when we publish packages ([4133c62](https://github.com/EndyKaufman/pg-tools/commit/4133c62975e846651a839e65f61b4311607c977a))
+
 ## [1.3.1](https://github.com/EndyKaufman/pg-tools/compare/pg-flyway-v1.3.0...pg-flyway-v1.3.1) (2025-07-05)
 
 
