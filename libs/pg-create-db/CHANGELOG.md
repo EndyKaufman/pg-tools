@@ -1,3 +1,10 @@
+## [1.1.12](https://github.com/EndyKaufman/pg-tools/compare/pg-create-db-v1.1.11...pg-create-db-v1.1.12) (2025-12-25)
+
+
+### Bug Fixes
+
+* force update public npm libs ([ea37805](https://github.com/EndyKaufman/pg-tools/commit/ea37805dc9c2b1ccd2a82d4b6cf78ebffad44839))
+
 ## [1.1.11](https://github.com/EndyKaufman/pg-tools/compare/pg-create-db-v1.1.10...pg-create-db-v1.1.11) (2025-12-25)
 
 
