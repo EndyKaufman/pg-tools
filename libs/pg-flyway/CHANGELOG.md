@@ -1,3 +1,10 @@
+## [1.3.3](https://github.com/EndyKaufman/pg-tools/compare/pg-flyway-v1.3.2...pg-flyway-v1.3.3) (2025-12-25)
+
+
+### Bug Fixes
+
+* force update public npm libs ([ea37805](https://github.com/EndyKaufman/pg-tools/commit/ea37805dc9c2b1ccd2a82d4b6cf78ebffad44839))
+
 ## [1.3.2](https://github.com/EndyKaufman/pg-tools/compare/pg-flyway-v1.3.1...pg-flyway-v1.3.2) (2025-12-25)
 
 
